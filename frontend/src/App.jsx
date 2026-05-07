@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -10,29 +12,44 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BookAppointment from "./pages/BookAppointment";
 import MyAppointments from "./pages/MyAppointments";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
+
   return (
+
     <BrowserRouter>
 
       <div className="app-layout">
 
+        {/* Navbar */}
         <Navbar />
 
+        {/* Main Content */}
         <main className="content">
 
           <Routes>
 
-            {/* Public routes */}
-            <Route path="/" element={<Home />} />
+            {/* PUBLIC ROUTES */}
 
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={<Home />}
+            />
 
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/login"
+              element={<Login />}
+            />
 
-            {/* Protected routes */}
+            <Route
+              path="/register"
+              element={<Register />}
+            />
 
-            {/* Dashboard route added here */}
+
+            {/* PROTECTED USER ROUTES */}
+
             <Route
               path="/dashboard"
               element={
@@ -60,15 +77,29 @@ function App() {
               }
             />
 
+
+            {/* ADMIN ROUTE */}
+
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+
           </Routes>
 
         </main>
 
+        {/* Footer */}
         <Footer />
 
       </div>
 
     </BrowserRouter>
+
   );
 }
 

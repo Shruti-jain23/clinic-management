@@ -41,3 +41,15 @@ export const getAppointments = async () => {
 
   return data;
 };
+export const deleteAppointment = async (id) => {
+
+  const response = await fetch(
+    `http://localhost:5000/api/appointments/${id}`,
+    {
+      method: "DELETE"
+    }
+  );
+
+  return response.json();
+
+};

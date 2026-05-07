@@ -9,7 +9,7 @@ const MyAppointments = () => {
     fetchAppointments();
   }, []);
 
-  // ✅ correct function
+  
   const fetchAppointments = async () => {
     try {
       const data = await getAppointments();

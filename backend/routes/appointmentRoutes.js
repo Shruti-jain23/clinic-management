@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Appointment = require("../models/Appointment");
 
-// BOOK appointment (already working)
+// BOOK appointment 
 router.post("/book", async (req, res) => {
   try {
     const { patientName, date, time } = req.body;
@@ -27,7 +27,7 @@ router.post("/book", async (req, res) => {
 });
 
 
-// ✅ NEW: GET all appointments
+// GET all appointments
 router.get("/all", async (req, res) => {
   try {
     const appointments = await Appointment.find().sort({ date: 1 });
@@ -38,5 +38,26 @@ router.get("/all", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// DELETE appointment
+router.delete("/:id", async (req, res) => {
+
+  try {
+
+    await Appointment.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Appointment deleted successfully"
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+});
+
 
 module.exports = router;

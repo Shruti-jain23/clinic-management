@@ -35,31 +35,49 @@ const Navbar = () => {
       <div className="nav-container">
 
         {/* Logo */}
-        <h2 className="logo">ClinicCare</h2>
+        <h2 className="logo">Jain Clinic</h2>
 
         {/* Links */}
         <ul className="nav-links">
 
+          {/* Home */}
           <li>
             <Link to="/">Home</Link>
           </li>
 
-          {/* show only when logged in */}
+          {/* Logged In Links */}
           {user && (
             <>
-              {/* Dashboard added here */}
+
+              {/* Dashboard */}
               <li>
                 <Link to="/dashboard">Dashboard</Link>
               </li>
 
+              {/* Book Appointment */}
               <li>
-                <Link to="/book-appointment">Book Appointment</Link>
+                <Link to="/book-appointment">
+                  Book Appointment
+                </Link>
               </li>
 
+              {/* My Appointments */}
               <li>
-                <Link to="/appointments">My Appointments</Link>
+                <Link to="/appointments">
+                  My Appointments
+                </Link>
               </li>
 
+              {/* ✅ Admin Panel Link */}
+              {user.isAdmin && (
+                <li>
+                  <Link to="/admin">
+                    Admin Panel
+                  </Link>
+                </li>
+              )}
+
+              {/* Logout */}
               <li>
                 <button
                   onClick={handleLogout}
@@ -76,12 +94,14 @@ const Navbar = () => {
                   Logout
                 </button>
               </li>
+
             </>
           )}
 
-          {/* show only when logged out */}
+          {/* Logged Out Links */}
           {!user && (
             <>
+
               <li>
                 <Link to="/login">Login</Link>
               </li>
@@ -91,6 +111,7 @@ const Navbar = () => {
                   Register
                 </Link>
               </li>
+
             </>
           )}
 

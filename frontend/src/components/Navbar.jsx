@@ -7,119 +7,291 @@ const Navbar = () => {
 
   const [user, setUser] = useState(null);
 
-  // check login status on load
+  // Check login status
   useEffect(() => {
 
-    const storedUser = localStorage.getItem("user");
+    const checkUser = () => {
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+      const storedUser =
+        localStorage.getItem("user");
+
+      if (storedUser) {
+
+        setUser(JSON.parse(storedUser));
+
+      } else {
+
+        setUser(null);
+
+      }
+
+    };
+
+    // Run on first load
+    checkUser();
+
+    // Listen for localStorage updates
+    window.addEventListener(
+      "storage",
+      checkUser
+    );
+
+    return () => {
+
+      window.removeEventListener(
+        "storage",
+        checkUser
+      );
+
+    };
 
   }, []);
 
-  // logout function
+  // Logout
   const handleLogout = () => {
 
     localStorage.removeItem("user");
 
     setUser(null);
 
-    navigate("/login");
+    window.location.href = "/";
+
+  };
+
+  // Book appointment logic
+  const handleBookAppointment = () => {
+
+    if (user) {
+
+      navigate("/book-appointment");
+
+    } else {
+
+      navigate("/login");
+
+    }
+
+  };
+
+  // Scroll to services
+  const scrollToServices = (e) => {
+
+    e.preventDefault();
+
+    navigate("/");
+
+    setTimeout(() => {
+
+      const section =
+        document.getElementById("services");
+
+      if (section) {
+
+        section.scrollIntoView({
+          behavior: "smooth"
+        });
+
+      }
+
+    }, 100);
+
+  };
+
+  // Scroll to contact
+  const scrollToContact = (e) => {
+
+    e.preventDefault();
+
+    navigate("/");
+
+    setTimeout(() => {
+
+      const section =
+        document.getElementById("contact");
+
+      if (section) {
+
+        section.scrollIntoView({
+          behavior: "smooth"
+        });
+
+      }
+
+    }, 100);
+
+  };
+
+  // Scroll to top
+  const scrollToTop = () => {
+
+    navigate("/");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
   };
 
   return (
+
     <nav className="navbar">
 
-      <div className="nav-container">
+      <div className="navbar-container">
 
-        {/* Logo */}
-        <h2 className="logo">Jain Clinic</h2>
+        {/* LEFT - LOGO */}
 
-        {/* Links */}
-        <ul className="nav-links">
+        <div className="logo-section">
 
-          {/* Home */}
-          <li>
-            <Link to="/">Home</Link>
-          </li>
+          <div className="logo-circle">
+            ❤
+          </div>
 
-          {/* Logged In Links */}
-          {user && (
-            <>
+          <div>
 
-              {/* Dashboard */}
+            <h2 className="logo-text">
+              Jain Clinic
+            </h2>
+
+            <p className="logo-subtitle">
+              Premium Healthcare
+            </p>
+
+          </div>
+
+        </div>
+
+
+        {/* CENTER LINKS */}
+
+        {!user ? (
+
+          <ul className="nav-links">
+
+            {/* HOME */}
+
+            <li>
+
+              <Link
+                to="/"
+                onClick={scrollToTop}
+              >
+                Home
+              </Link>
+
+            </li>
+
+            {/* SERVICES */}
+
+            <li>
+
+              <Link
+                to="/"
+                onClick={scrollToServices}
+              >
+                Services
+              </Link>
+
+            </li>
+
+            {/* ABOUT */}
+
+            <li>
+
+              <a href="#">
+                About
+              </a>
+
+            </li>
+
+            {/* CONTACT */}
+
+            <li>
+
+              <Link
+                to="/"
+                onClick={scrollToContact}
+              >
+                Contact
+              </Link>
+
+            </li>
+
+          </ul>
+
+        ) : (
+
+          <ul className="nav-links">
+
+            {/* DASHBOARD */}
+
+            <li>
+
+              <Link to="/dashboard">
+                Dashboard
+              </Link>
+
+            </li>
+
+            {/* APPOINTMENTS */}
+
+            <li>
+
+              <Link to="/appointments">
+                Appointments
+              </Link>
+
+            </li>
+
+            {/* ADMIN */}
+
+            {user.isAdmin && (
+
               <li>
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
 
-              {/* Book Appointment */}
-              <li>
-                <Link to="/book-appointment">
-                  Book Appointment
+                <Link to="/admin">
+                  Admin
                 </Link>
+
               </li>
 
-              {/* My Appointments */}
-              <li>
-                <Link to="/appointments">
-                  My Appointments
-                </Link>
-              </li>
+            )}
 
-              {/* ✅ Admin Panel Link */}
-              {user.isAdmin && (
-                <li>
-                  <Link to="/admin">
-                    Admin Panel
-                  </Link>
-                </li>
-              )}
+          </ul>
 
-              {/* Logout */}
-              <li>
-                <button
-                  onClick={handleLogout}
-                  className="nav-btn"
-                  style={{
-                    border: "none",
-                    background: "#dc3545",
-                    color: "white",
-                    padding: "6px 12px",
-                    borderRadius: "5px",
-                    cursor: "pointer"
-                  }}
-                >
-                  Logout
-                </button>
-              </li>
+        )}
 
-            </>
+
+        {/* RIGHT BUTTON */}
+
+        <div className="nav-actions">
+
+          {!user ? (
+
+            <button
+              className="book-btn"
+              onClick={handleBookAppointment}
+            >
+              Book Appointment
+            </button>
+
+          ) : (
+
+            <button
+              className="logout-btn"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+
           )}
 
-          {/* Logged Out Links */}
-          {!user && (
-            <>
-
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-
-              <li>
-                <Link to="/register" className="nav-btn">
-                  Register
-                </Link>
-              </li>
-
-            </>
-          )}
-
-        </ul>
+        </div>
 
       </div>
 
     </nav>
+
   );
 };
 

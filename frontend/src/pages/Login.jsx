@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { loginUser } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
 
@@ -13,76 +13,136 @@ const Login = () => {
 
   const [message, setMessage] = useState("");
 
-  // handle input change
+  // Handle input change
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+
   };
 
-  // handle submit
+  // Handle submit
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
+
       const response = await loginUser(formData);
 
       if (response.message === "Login successful") {
 
-        // save user in localStorage
-        localStorage.setItem("user", JSON.stringify(response.user));
+        // Save user in localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.user)
+        );
 
         setMessage("Login successful ✅");
 
-        // redirect to home
+        // FULL PAGE REFRESH
         setTimeout(() => {
-          navigate("/");
+
+          window.location.href = "/";
+
         }, 1000);
 
       } else {
+
         setMessage(response.message);
+
       }
 
     } catch (error) {
+
       setMessage("Login failed");
+
     }
+
   };
 
   return (
+
     <div className="page-container">
 
-      <h2>Login</h2>
+      <div className="auth-card">
 
-      <form className="form" onSubmit={handleSubmit}>
+        <h2 className="auth-title">
+          Welcome Back
+        </h2>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          required
-          onChange={handleChange}
-        />
+        <p className="auth-subtitle">
+          Login to continue your healthcare journey
+        </p>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          onChange={handleChange}
-        />
+        <form
+          className="form"
+          onSubmit={handleSubmit}
+        >
 
-        <button type="submit" className="btn-primary">
-          Login
-        </button>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+          />
 
-      {message && <p>{message}</p>}
+          <button
+            type="submit"
+            className="btn-primary"
+          >
+            Login
+          </button>
+
+        </form>
+
+        {message && (
+          <p style={{ marginTop: "15px" }}>
+            {message}
+          </p>
+        )}
+
+        {/* Register Link */}
+
+        <p
+          style={{
+            marginTop: "20px",
+            color: "#475569"
+          }}
+        >
+          Don’t have an account?{" "}
+
+          <Link
+            to="/register"
+            style={{
+              color: "#008060",
+              fontWeight: "600",
+              textDecoration: "none"
+            }}
+          >
+            Create Account
+          </Link>
+
+        </p>
+
+      </div>
 
     </div>
+
   );
 };
 
 export default Login;
-

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { registerUser } from "../services/api";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -11,71 +14,133 @@ const Register = () => {
 
   const [message, setMessage] = useState("");
 
-  // handle input change
+  // Handle input change
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+
   };
 
-  // handle form submit
+  // Handle form submit
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
+
       const response = await registerUser(formData);
 
       if (response.message === "User registered successfully") {
+
         setMessage("Registration successful ✅");
+
+        // Redirect to login after success
+        setTimeout(() => {
+          navigate("/login");
+        }, 1200);
+
       } else {
+
         setMessage(response.message);
+
       }
 
     } catch (error) {
+
       setMessage("Registration failed");
+
     }
+
   };
 
   return (
+
     <div className="page-container">
-      <h2>Register</h2>
 
-      <form className="form" onSubmit={handleSubmit}>
+      <div className="auth-card">
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          required
-          onChange={handleChange}
-        />
+        <h2 className="auth-title">
+          Create Account
+        </h2>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          required
-          onChange={handleChange}
-        />
+        <p className="auth-subtitle">
+          Join Jain Clinic for seamless healthcare services
+        </p>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          onChange={handleChange}
-        />
+        <form
+          className="form"
+          onSubmit={handleSubmit}
+        >
 
-        <button type="submit" className="btn-primary">
-          Register
-        </button>
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
+            onChange={handleChange}
+          />
 
-      </form>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            required
+            onChange={handleChange}
+          />
 
-      {message && <p>{message}</p>}
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            onChange={handleChange}
+          />
+
+          <button
+            type="submit"
+            className="btn-primary"
+          >
+            Create Account
+          </button>
+
+        </form>
+
+        {message && (
+          <p style={{ marginTop: "15px" }}>
+            {message}
+          </p>
+        )}
+
+        {/* Login Link */}
+
+        <p
+          style={{
+            marginTop: "20px",
+            color: "#475569"
+          }}
+        >
+          Already have an account?{" "}
+
+          <Link
+            to="/login"
+            style={{
+              color: "#008060",
+              fontWeight: "600",
+              textDecoration: "none"
+            }}
+          >
+            Login
+          </Link>
+
+        </p>
+
+      </div>
 
     </div>
+
   );
 };
 

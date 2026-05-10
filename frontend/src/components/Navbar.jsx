@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {
+  useState,
+  useEffect
+} from "react";
+
+import {
+  Link,
+  useNavigate
+} from "react-router-dom";
 
 const Navbar = () => {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] =
+    useState(null);
 
   // Check login status
   useEffect(() => {
@@ -13,11 +22,17 @@ const Navbar = () => {
     const checkUser = () => {
 
       const storedUser =
-        localStorage.getItem("user");
+        localStorage.getItem(
+          "user"
+        );
 
       if (storedUser) {
 
-        setUser(JSON.parse(storedUser));
+        setUser(
+          JSON.parse(
+            storedUser
+          )
+        );
 
       } else {
 
@@ -27,10 +42,8 @@ const Navbar = () => {
 
     };
 
-    // Run on first load
     checkUser();
 
-    // Listen for localStorage updates
     window.addEventListener(
       "storage",
       checkUser
@@ -50,76 +63,90 @@ const Navbar = () => {
   // Logout
   const handleLogout = () => {
 
-    localStorage.removeItem("user");
+    localStorage.removeItem(
+      "user"
+    );
 
     setUser(null);
 
-    window.location.href = "/";
+    window.location.href =
+      "/";
 
   };
 
   // Book appointment logic
-  const handleBookAppointment = () => {
+  const handleBookAppointment =
+    () => {
 
-    if (user) {
+      if (user) {
 
-      navigate("/book-appointment");
+        navigate(
+          "/book-appointment"
+        );
 
-    } else {
+      } else {
 
-      navigate("/login");
+        navigate("/login");
 
-    }
+      }
 
-  };
+    };
 
   // Scroll to services
-  const scrollToServices = (e) => {
+  const scrollToServices =
+    (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    navigate("/");
+      navigate("/");
 
-    setTimeout(() => {
+      setTimeout(() => {
 
-      const section =
-        document.getElementById("services");
+        const section =
+          document.getElementById(
+            "services"
+          );
 
-      if (section) {
+        if (section) {
 
-        section.scrollIntoView({
-          behavior: "smooth"
-        });
+          section.scrollIntoView({
+            behavior:
+              "smooth"
+          });
 
-      }
+        }
 
-    }, 100);
+      }, 100);
 
-  };
+    };
 
   // Scroll to contact
-  const scrollToContact = (e) => {
+  const scrollToContact =
+    (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    navigate("/");
+      navigate("/");
 
-    setTimeout(() => {
+      setTimeout(() => {
 
-      const section =
-        document.getElementById("contact");
+        const section =
+          document.getElementById(
+            "contact"
+          );
 
-      if (section) {
+        if (section) {
 
-        section.scrollIntoView({
-          behavior: "smooth"
-        });
+          section.scrollIntoView({
+            behavior:
+              "smooth"
+          });
 
-      }
+        }
 
-    }, 100);
+      }, 100);
 
-  };
+    };
 
   // Scroll to top
   const scrollToTop = () => {
@@ -139,8 +166,7 @@ const Navbar = () => {
 
       <div className="navbar-container">
 
-        {/* LEFT - LOGO */}
-
+        {/* LOGO */}
         <div className="logo-section">
 
           <div className="logo-circle">
@@ -162,100 +188,98 @@ const Navbar = () => {
         </div>
 
 
-        {/* CENTER LINKS */}
-
+        {/* NAV LINKS */}
         {!user ? (
 
           <ul className="nav-links">
 
-            {/* HOME */}
-
             <li>
-
               <Link
                 to="/"
-                onClick={scrollToTop}
+                onClick={
+                  scrollToTop
+                }
               >
                 Home
               </Link>
-
             </li>
 
-            {/* SERVICES */}
-
             <li>
-
               <Link
                 to="/"
-                onClick={scrollToServices}
+                onClick={
+                  scrollToServices
+                }
               >
                 Services
               </Link>
-
             </li>
 
-            {/* ABOUT */}
-
             <li>
-
               <a href="#">
                 About
               </a>
-
             </li>
 
-            {/* CONTACT */}
-
             <li>
-
               <Link
                 to="/"
-                onClick={scrollToContact}
+                onClick={
+                  scrollToContact
+                }
               >
                 Contact
               </Link>
+            </li>
 
+          </ul>
+
+        ) : user.isAdmin ? (
+
+          /* ADMIN NAVBAR */
+          <ul className="nav-links">
+
+            <li>
+              <Link
+                to="/"
+                onClick={
+                  scrollToTop
+                }
+              >
+                Home
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/admin">
+                Admin Dashboard
+              </Link>
             </li>
 
           </ul>
 
         ) : (
 
+          /* USER NAVBAR */
           <ul className="nav-links">
 
-            {/* DASHBOARD */}
-
             <li>
-
               <Link to="/dashboard">
                 Dashboard
               </Link>
-
             </li>
 
-            {/* APPOINTMENTS */}
-
             <li>
-
               <Link to="/appointments">
                 Appointments
               </Link>
-
             </li>
 
-            {/* ADMIN */}
-
-            {user.isAdmin && (
-
-              <li>
-
-                <Link to="/admin">
-                  Admin
-                </Link>
-
-              </li>
-
-            )}
+            <li>
+              <Link to="/book-appointment">
+                Book Appointment
+              </Link>
+            </li>
 
           </ul>
 
@@ -263,14 +287,15 @@ const Navbar = () => {
 
 
         {/* RIGHT BUTTON */}
-
         <div className="nav-actions">
 
           {!user ? (
 
             <button
               className="book-btn"
-              onClick={handleBookAppointment}
+              onClick={
+                handleBookAppointment
+              }
             >
               Book Appointment
             </button>
@@ -279,7 +304,9 @@ const Navbar = () => {
 
             <button
               className="logout-btn"
-              onClick={handleLogout}
+              onClick={
+                handleLogout
+              }
             >
               Logout
             </button>
@@ -293,6 +320,7 @@ const Navbar = () => {
     </nav>
 
   );
+
 };
 
 export default Navbar;

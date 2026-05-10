@@ -10,25 +10,27 @@ const Dashboard = () => {
 
   const [appointments, setAppointments] = useState([]);
 
-  // load user from localStorage
   useEffect(() => {
 
-    const storedUser = localStorage.getItem("user");
+    const storedUser =
+      localStorage.getItem("user");
 
     if (storedUser) {
+
       setUser(JSON.parse(storedUser));
+
     }
 
     fetchAppointments();
 
   }, []);
 
-  // fetch appointments
   const fetchAppointments = async () => {
 
     try {
 
-      const data = await getAppointments();
+      const data =
+        await getAppointments();
 
       setAppointments(data);
 
@@ -41,42 +43,57 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="page-container">
 
-      <h2>Dashboard</h2>
+    <div className="dashboard-page">
 
-      {/* Welcome message */}
-      {user && (
-        <h3>
-          Welcome, {user.name} 👋
-        </h3>
-      )}
+      <div className="dashboard-header">
 
-      {/* Appointment count */}
-      <div className="card">
+        <div>
 
-        <h4>Total Appointments</h4>
+          <h2 className="dashboard-heading">
+            Dashboard
+          </h2>
 
-        <p style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {appointments.length}
-        </p>
+          {user && (
+            <p className="dashboard-welcome">
+              Welcome, <span>{user.name}</span> 👋
+            </p>
+          )}
+
+        </div>
 
       </div>
 
-      {/* Quick actions */}
-      <div style={{ marginTop: "20px" }}>
+      <div className="dashboard-grid">
+
+        <div className="dashboard-card">
+
+          <h3>Total Appointments</h3>
+
+          <p className="dashboard-number">
+            {appointments.length}
+          </p>
+
+        </div>
+
+      </div>
+
+      <div className="dashboard-actions">
 
         <button
           className="btn-primary"
-          onClick={() => navigate("/book-appointment")}
+          onClick={() =>
+            navigate("/book-appointment")
+          }
         >
-          Book New Appointment
+          Book Appointment
         </button>
 
         <button
-          className="btn-secondary"
-          style={{ marginLeft: "10px" }}
-          onClick={() => navigate("/appointments")}
+          className="secondary-btn"
+          onClick={() =>
+            navigate("/appointments")
+          }
         >
           View My Appointments
         </button>
@@ -84,7 +101,9 @@ const Dashboard = () => {
       </div>
 
     </div>
+
   );
+
 };
 
 export default Dashboard;

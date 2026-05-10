@@ -33,13 +33,20 @@ const Register = () => {
 
       const response = await registerUser(formData);
 
-      if (response.message === "User registered successfully") {
+      if (
+        response.message ===
+        "User registered successfully"
+      ) {
 
-        setMessage("Registration successful ✅");
+        setMessage(
+          "Registration successful ✅"
+        );
 
-        // Redirect to login after success
+        // Redirect to login
         setTimeout(() => {
+
           navigate("/login");
+
         }, 1200);
 
       } else {
@@ -58,7 +65,7 @@ const Register = () => {
 
   return (
 
-    <div className="page-container">
+    <div className="auth-page">
 
       <div className="auth-card">
 
@@ -80,6 +87,7 @@ const Register = () => {
             name="name"
             placeholder="Full Name"
             required
+            value={formData.name}
             onChange={handleChange}
           />
 
@@ -88,6 +96,7 @@ const Register = () => {
             name="email"
             placeholder="Email Address"
             required
+            value={formData.email}
             onChange={handleChange}
           />
 
@@ -96,6 +105,7 @@ const Register = () => {
             name="password"
             placeholder="Password"
             required
+            value={formData.password}
             onChange={handleChange}
           />
 
@@ -114,8 +124,6 @@ const Register = () => {
           </p>
         )}
 
-        {/* Login Link */}
-
         <p
           style={{
             marginTop: "20px",
@@ -128,8 +136,7 @@ const Register = () => {
             to="/login"
             style={{
               color: "#008060",
-              fontWeight: "600",
-              textDecoration: "none"
+              fontWeight: "600"
             }}
           >
             Login
@@ -142,6 +149,7 @@ const Register = () => {
     </div>
 
   );
+
 };
 
 export default Register;

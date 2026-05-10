@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { loginUser } from "../services/api";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -34,7 +32,7 @@ const Login = () => {
 
       if (response.message === "Login successful") {
 
-        // Save user in localStorage
+        // Save user
         localStorage.setItem(
           "user",
           JSON.stringify(response.user)
@@ -42,7 +40,7 @@ const Login = () => {
 
         setMessage("Login successful ✅");
 
-        // FULL PAGE REFRESH
+        // Redirect
         setTimeout(() => {
 
           window.location.href = "/";
@@ -65,7 +63,7 @@ const Login = () => {
 
   return (
 
-    <div className="page-container">
+    <div className="auth-page">
 
       <div className="auth-card">
 
@@ -115,8 +113,6 @@ const Login = () => {
           </p>
         )}
 
-        {/* Register Link */}
-
         <p
           style={{
             marginTop: "20px",
@@ -129,8 +125,7 @@ const Login = () => {
             to="/register"
             style={{
               color: "#008060",
-              fontWeight: "600",
-              textDecoration: "none"
+              fontWeight: "600"
             }}
           >
             Create Account

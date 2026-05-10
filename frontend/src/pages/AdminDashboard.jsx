@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { getAppointments, deleteAppointment } from "../services/api";
+import React, {
+  useEffect,
+  useState
+} from "react";
+
+import {
+  getAllAppointments,
+  deleteAppointment,
+  updateAppointmentStatus
+} from "../services/api";
 
 const AdminDashboard = () => {
 
-  const [appointments, setAppointments] = useState([]);
+  const [
+    appointments,
+    setAppointments
+  ] = useState([]);
 
   useEffect(() => {
 
@@ -11,76 +22,200 @@ const AdminDashboard = () => {
 
   }, []);
 
-  const fetchAppointments = async () => {
+  const fetchAppointments =
+    async () => {
 
-    const data = await getAppointments();
-    console.log(data);
+      try {
 
-    setAppointments(data);
+        const data =
+          await getAllAppointments();
 
-  };
+        console.log(data);
 
-  const handleDelete = async (id) => {
+        setAppointments(data);
 
-    if (!window.confirm("Delete this appointment?")) return;
+      } catch (error) {
 
-    await deleteAppointment(id);
+        console.log(error);
 
-    fetchAppointments();
+      }
 
-  };
+    };
+
+  const handleDelete =
+    async (id) => {
+
+      if (
+        !window.confirm(
+          "Delete this appointment?"
+        )
+      ) return;
+
+      await deleteAppointment(id);
+
+      fetchAppointments();
+
+    };
+
+  const handleStatusChange =
+    async (id, status) => {
+
+      await updateAppointmentStatus(
+        id,
+        status
+      );
+
+      fetchAppointments();
+
+    };
 
   return (
-    <div className="page-container">
 
-      <h2>Admin Panel</h2>
+    <div className="dashboard-page">
 
-      <h3>All Appointments</h3>
+      <h2
+        className="dashboard-title"
+        style={{
+          textAlign: "center"
+        }}
+      >
+        Admin Dashboard
+      </h2>
 
       {appointments.length === 0 ? (
 
-        <p>No appointments found</p>
+        <p
+          style={{
+            textAlign: "center"
+          }}
+        >
+          No appointments found
+        </p>
 
       ) : (
 
-        appointments.map((appt) => (
+        <div className="appointments-grid">
 
-          <div key={appt._id} className="card">
+          {appointments.map(
+            (appt) => (
 
-            <p>
-              <strong>Name:</strong> {appt.patientName}
-            </p>
+              <div
+                key={appt._id}
+                className="card"
+              >
 
-            <p>
-              <strong>Date:</strong> {appt.date}
-            </p>
+                <p>
+                  <strong>
+                    Name:
+                  </strong>{" "}
+                  {appt.name}
+                </p>
 
-            <p>
-              <strong>Time:</strong> {appt.time}
-            </p>
+                <p>
+                  <strong>
+                    Email:
+                  </strong>{" "}
+                  {appt.email}
+                </p>
 
-            <button
-              onClick={() => handleDelete(appt._id)}
-              style={{
-                background: "#dc3545",
-                color: "white",
-                border: "none",
-                padding: "6px 10px",
-                borderRadius: "5px",
-                cursor: "pointer"
-              }}
-            >
-              Delete
-            </button>
+                <p>
+                  <strong>
+                    Doctor:
+                  </strong>{" "}
+                  Dr. {appt.doctor}
+                </p>
 
-          </div>
+                <p>
+                  <strong>
+                    Date:
+                  </strong>{" "}
+                  {appt.date}
+                </p>
 
-        ))
+                <p>
+                  <strong>
+                    Time:
+                  </strong>{" "}
+                  {appt.time}
+                </p>
+
+                <p>
+                  <strong>
+                    Status:
+                  </strong>{" "}
+                  {appt.status}
+                </p>
+
+                <select
+                  value={appt.status}
+                  onChange={(e) =>
+                    handleStatusChange(
+                      appt._id,
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    padding: "8px",
+                    marginTop: "10px",
+                    width: "100%"
+                  }}
+                >
+                  <option>
+                    Pending
+                  </option>
+
+                  <option>
+                    Confirmed
+                  </option>
+
+                  <option>
+                    Cancelled
+                  </option>
+
+                  <option>
+                    Completed
+                  </option>
+
+                </select>
+
+                <button
+                  onClick={() =>
+                    handleDelete(
+                      appt._id
+                    )
+                  }
+                  style={{
+                    background:
+                      "#dc3545",
+                    color: "white",
+                    border: "none",
+                    padding:
+                      "10px 14px",
+                    borderRadius:
+                      "8px",
+                    cursor:
+                      "pointer",
+                    marginTop:
+                      "15px",
+                    width: "100%"
+                  }}
+                >
+                  Delete
+                </button>
+
+              </div>
+
+            )
+          )}
+
+        </div>
 
       )}
 
     </div>
+
   );
+
 };
 
 export default AdminDashboard;

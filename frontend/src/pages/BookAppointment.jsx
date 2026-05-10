@@ -7,6 +7,8 @@ import {
   bookAppointment
 } from "../services/api";
 
+import { toast } from "react-toastify";
+
 const BookAppointment = () => {
 
   const [formData, setFormData] =
@@ -17,9 +19,6 @@ const BookAppointment = () => {
       date: "",
       time: "",
     });
-
-  const [message, setMessage] =
-    useState("");
 
   // Doctor list
   const doctors = [
@@ -97,10 +96,12 @@ const BookAppointment = () => {
           "Appointment booked successfully"
         ) {
 
-          setMessage(
+          // SUCCESS TOAST
+          toast.success(
             "Appointment booked successfully ✅"
           );
 
+          // Reset form
           setFormData({
             name: user.name || "",
             email: user.email || "",
@@ -111,7 +112,8 @@ const BookAppointment = () => {
 
         } else {
 
-          setMessage(
+          // ERROR TOAST
+          toast.error(
             response.message
           );
 
@@ -121,7 +123,7 @@ const BookAppointment = () => {
 
         console.log(error);
 
-        setMessage(
+        toast.error(
           "Error booking appointment"
         );
 
@@ -166,7 +168,7 @@ const BookAppointment = () => {
             readOnly
           />
 
-          {/* DOCTOR DROPDOWN */}
+          {/* DOCTOR */}
           <select
             name="doctor"
             required
@@ -194,11 +196,16 @@ const BookAppointment = () => {
             type="date"
             name="date"
             required
+            min={
+              new Date()
+                .toISOString()
+                .split("T")[0]
+            }
             value={formData.date}
             onChange={handleChange}
           />
 
-          {/* TIME SLOT DROPDOWN */}
+          {/* TIME SLOT */}
           <select
             name="time"
             required
@@ -229,21 +236,6 @@ const BookAppointment = () => {
           </button>
 
         </form>
-
-        {message && (
-
-          <p
-            style={{
-              marginTop: "18px",
-              textAlign: "center",
-              color: "#008060",
-              fontWeight: "600"
-            }}
-          >
-            {message}
-          </p>
-
-        )}
 
       </div>
 

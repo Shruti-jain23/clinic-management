@@ -23,25 +23,66 @@ router.post("/book", async (req, res) => {
     } = req.body;
 
 
-    // PREVENT DOUBLE BOOKING
-    // Ignore cancelled appointments
-    const existingAppointment =
+    // ==========================
+    // 1. PREVENT SAME USER
+    // BOOKING SAME APPOINTMENT
+    // ==========================
+
+    const existingUserBooking =
       await Appointment.findOne({
+
+        userId,
         doctor,
         date,
         time,
+
         status: {
           $ne: "Cancelled"
         }
+
+      });
+
+    if (existingUserBooking) {
+
+      return res.status(400).json({
+        message:
+          "You already booked this appointment"
+      });
+
+    }
+
+
+    // ==========================
+    // 2. PREVENT SLOT
+    // DOUBLE BOOKING
+    // ==========================
+
+    const existingAppointment =
+      await Appointment.findOne({
+
+        doctor,
+        date,
+        time,
+
+        status: {
+          $ne: "Cancelled"
+        }
+
       });
 
     if (existingAppointment) {
+
       return res.status(400).json({
         message:
           "This slot is already booked"
       });
+
     }
 
+
+    // ==========================
+    // CREATE APPOINTMENT
+    // ==========================
 
     const newAppointment =
       new Appointment({
@@ -53,7 +94,6 @@ router.post("/book", async (req, res) => {
         time,
         userId,
 
-        // default status
         status: "Pending"
 
       });
@@ -65,7 +105,8 @@ router.post("/book", async (req, res) => {
       message:
         "Appointment booked successfully",
 
-      appointment: newAppointment
+      appointment:
+        newAppointment
 
     });
 
@@ -207,6 +248,5 @@ router.delete("/:id", async (req, res) => {
   }
 
 });
-
 
 module.exports = router;

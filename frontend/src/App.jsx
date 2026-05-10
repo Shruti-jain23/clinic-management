@@ -14,10 +14,11 @@ import BookAppointment from "./pages/BookAppointment";
 import MyAppointments from "./pages/MyAppointments";
 import AdminDashboard from "./pages/AdminDashboard";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
-
   return (
-
     <BrowserRouter>
 
       <div className="app-layout">
@@ -31,7 +32,6 @@ function App() {
           <Routes>
 
             {/* PUBLIC ROUTES */}
-
             <Route
               path="/"
               element={<Home />}
@@ -47,9 +47,7 @@ function App() {
               element={<Register />}
             />
 
-
             {/* PROTECTED USER ROUTES */}
-
             <Route
               path="/dashboard"
               element={
@@ -77,9 +75,7 @@ function App() {
               }
             />
 
-
             {/* ADMIN ROUTE */}
-
             <Route
               path="/admin"
               element={
@@ -96,10 +92,19 @@ function App() {
         {/* Footer */}
         <Footer />
 
+        {/* Toast Notifications */}
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          pauseOnHover
+        />
+
       </div>
 
     </BrowserRouter>
-
   );
 }
 

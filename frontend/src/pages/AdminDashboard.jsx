@@ -31,6 +31,21 @@ const AdminDashboard = () => {
     setSortOrder
   ] = useState("Newest");
 
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
+
+  const [
+    deletingId,
+    setDeletingId
+  ] = useState(null);
+
+  const [
+    updatingId,
+    setUpdatingId
+  ] = useState(null);
+
   useEffect(() => {
     fetchAppointments();
   }, []);
@@ -39,6 +54,8 @@ const AdminDashboard = () => {
     async () => {
 
       try {
+
+        setLoading(true);
 
         const data =
           await getAllAppointments();
@@ -49,8 +66,11 @@ const AdminDashboard = () => {
 
         console.log(error);
 
-      }
+      } finally {
 
+        setLoading(false);
+
+      }
     };
 
   const handleDelete =
@@ -62,22 +82,48 @@ const AdminDashboard = () => {
         )
       ) return;
 
-      await deleteAppointment(id);
+      try {
 
-      fetchAppointments();
+        setDeletingId(id);
 
+        await deleteAppointment(id);
+
+        fetchAppointments();
+
+      } catch (error) {
+
+        console.log(error);
+
+      } finally {
+
+        setDeletingId(null);
+
+      }
     };
 
   const handleStatusChange =
     async (id, status) => {
 
-      await updateAppointmentStatus(
-        id,
-        status
-      );
+      try {
 
-      fetchAppointments();
+        setUpdatingId(id);
 
+        await updateAppointmentStatus(
+          id,
+          status
+        );
+
+        fetchAppointments();
+
+      } catch (error) {
+
+        console.log(error);
+
+      } finally {
+
+        setUpdatingId(null);
+
+      }
     };
 
   // ============================
@@ -90,34 +136,29 @@ const AdminDashboard = () => {
   const pendingCount =
     appointments.filter(
       (appt) =>
-        appt.status ===
-        "Pending"
+        appt.status === "Pending"
     ).length;
 
   const confirmedCount =
     appointments.filter(
       (appt) =>
-        appt.status ===
-        "Confirmed"
+        appt.status === "Confirmed"
     ).length;
 
   const completedCount =
     appointments.filter(
       (appt) =>
-        appt.status ===
-        "Completed"
+        appt.status === "Completed"
     ).length;
 
   const cancelledCount =
     appointments.filter(
       (appt) =>
-        appt.status ===
-        "Cancelled"
+        appt.status === "Cancelled"
     ).length;
 
-
   // ============================
-  // SEARCH + FILTER + SORT
+  // FILTER + SORT
   // ============================
 
   const filteredAppointments =
@@ -145,7 +186,6 @@ const AdminDashboard = () => {
           matchesSearch &&
           matchesStatus
         );
-
       })
 
       .sort((a, b) => {
@@ -156,20 +196,10 @@ const AdminDashboard = () => {
         const dateB =
           new Date(b.date);
 
-        if (
-          sortOrder === "Newest"
-        ) {
-          return (
-            dateB - dateA
-          );
-        } else {
-          return (
-            dateA - dateB
-          );
-        }
-
+        return sortOrder === "Newest"
+          ? dateB - dateA
+          : dateA - dateB;
       });
-
 
   // ============================
   // EXPORT CSV
@@ -240,272 +270,253 @@ const AdminDashboard = () => {
     document.body.removeChild(
       link
     );
-
   };
 
   return (
 
     <div className="dashboard-page">
 
-      <h2
-        className="dashboard-title"
-        style={{
-          textAlign: "center"
-        }}
-      >
+      <h2 className="dashboard-title">
         Admin Dashboard
       </h2>
 
+      {/* PAGE LOADING */}
 
-      {/* STATS */}
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(160px, 1fr))",
-          gap: "16px",
-          marginBottom: "30px"
-        }}
-      >
-
-        <div className="card">
-          <h3>Total</h3>
-          <p>{totalAppointments}</p>
-        </div>
-
-        <div className="card">
-          <h3>Pending</h3>
-          <p>{pendingCount}</p>
-        </div>
-
-        <div className="card">
-          <h3>Confirmed</h3>
-          <p>{confirmedCount}</p>
-        </div>
-
-        <div className="card">
-          <h3>Completed</h3>
-          <p>{completedCount}</p>
-        </div>
-
-        <div className="card">
-          <h3>Cancelled</h3>
-          <p>{cancelledCount}</p>
-        </div>
-
-      </div>
-
-
-      {/* SEARCH */}
-
-      <input
-        type="text"
-        placeholder="Search by patient or doctor..."
-        value={searchTerm}
-        onChange={(e) =>
-          setSearchTerm(
-            e.target.value
-          )
-        }
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "15px",
-          borderRadius: "8px",
-          border:
-            "1px solid #ccc"
-        }}
-      />
-
-
-      {/* STATUS FILTER */}
-
-      <select
-        value={statusFilter}
-        onChange={(e) =>
-          setStatusFilter(
-            e.target.value
-          )
-        }
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "15px",
-          borderRadius: "8px"
-        }}
-      >
-        <option value="All">
-          All Statuses
-        </option>
-
-        <option value="Pending">
-          Pending
-        </option>
-
-        <option value="Confirmed">
-          Confirmed
-        </option>
-
-        <option value="Completed">
-          Completed
-        </option>
-
-        <option value="Cancelled">
-          Cancelled
-        </option>
-      </select>
-
-
-      {/* SORT */}
-
-      <select
-        value={sortOrder}
-        onChange={(e) =>
-          setSortOrder(
-            e.target.value
-          )
-        }
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "15px",
-          borderRadius: "8px"
-        }}
-      >
-        <option value="Newest">
-          Sort: Newest First
-        </option>
-
-        <option value="Oldest">
-          Sort: Oldest First
-        </option>
-      </select>
-
-
-      {/* DOWNLOAD CSV */}
-
-      <button
-        onClick={exportToCSV}
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "25px",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer"
-        }}
-      >
-        Download CSV
-      </button>
-
-
-      {/* APPOINTMENTS */}
-
-      {filteredAppointments.length === 0 ? (
+      {loading ? (
 
         <p
           style={{
-            textAlign: "center"
+            textAlign: "center",
+            fontSize: "18px",
+            marginTop: "40px"
           }}
         >
-          No matching appointments
+          Loading appointments...
         </p>
 
       ) : (
 
-        <div className="appointments-grid">
+        <>
+          {/* STATS */}
 
-          {filteredAppointments.map(
-            (appt) => (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(160px, 1fr))",
+              gap: "16px",
+              marginBottom: "30px"
+            }}
+          >
 
-              <div
-                key={appt._id}
-                className="card"
-              >
+            <div className="card">
+              <h3>Total</h3>
+              <p>{totalAppointments}</p>
+            </div>
 
-                <p>
-                  <strong>Name:</strong> {appt.name}
-                </p>
+            <div className="card">
+              <h3>Pending</h3>
+              <p>{pendingCount}</p>
+            </div>
 
-                <p>
-                  <strong>Email:</strong> {appt.email}
-                </p>
+            <div className="card">
+              <h3>Confirmed</h3>
+              <p>{confirmedCount}</p>
+            </div>
 
-                <p>
-                  <strong>Doctor:</strong> Dr. {appt.doctor}
-                </p>
+            <div className="card">
+              <h3>Completed</h3>
+              <p>{completedCount}</p>
+            </div>
 
-                <p>
-                  <strong>Date:</strong> {appt.date}
-                </p>
+            <div className="card">
+              <h3>Cancelled</h3>
+              <p>{cancelledCount}</p>
+            </div>
 
-                <p>
-                  <strong>Time:</strong> {appt.time}
-                </p>
+          </div>
 
-                <p>
-                  <strong>Status:</strong> {appt.status}
-                </p>
+          {/* FILTER BAR */}
 
-                <select
-                  value={appt.status}
-                  onChange={(e) =>
-                    handleStatusChange(
-                      appt._id,
-                      e.target.value
-                    )
-                  }
-                  style={{
-                    padding: "8px",
-                    marginTop: "10px",
-                    width: "100%"
-                  }}
+          <div className="filter-bar">
+
+            <input
+              type="text"
+              placeholder="Search patient or doctor..."
+              value={searchTerm}
+              onChange={(e) =>
+                setSearchTerm(
+                  e.target.value
+                )
+              }
+            />
+
+            <select
+              value={statusFilter}
+              onChange={(e) =>
+                setStatusFilter(
+                  e.target.value
+                )
+              }
+            >
+              <option value="All">
+                All Status
+              </option>
+              <option value="Pending">
+                Pending
+              </option>
+              <option value="Confirmed">
+                Confirmed
+              </option>
+              <option value="Completed">
+                Completed
+              </option>
+              <option value="Cancelled">
+                Cancelled
+              </option>
+            </select>
+
+            <select
+              value={sortOrder}
+              onChange={(e) =>
+                setSortOrder(
+                  e.target.value
+                )
+              }
+            >
+              <option value="Newest">
+                Newest
+              </option>
+              <option value="Oldest">
+                Oldest
+              </option>
+            </select>
+
+            <button
+              onClick={exportToCSV}
+              className="btn-primary"
+            >
+              Export CSV
+            </button>
+
+          </div>
+
+          {/* APPOINTMENTS */}
+
+          <div className="appointments-grid">
+
+            {filteredAppointments.map(
+              (appt) => (
+
+                <div
+                  key={appt._id}
+                  className="card"
                 >
-                  <option>Pending</option>
-                  <option>Confirmed</option>
-                  <option>Cancelled</option>
-                  <option>Completed</option>
-                </select>
 
-                <button
-                  onClick={() =>
-                    handleDelete(
+                  <p>
+                    <strong>Name:</strong>{" "}
+                    {appt.name}
+                  </p>
+
+                  <p>
+                    <strong>Email:</strong>{" "}
+                    {appt.email}
+                  </p>
+
+                  <p>
+                    <strong>Doctor:</strong>{" "}
+                    Dr. {appt.doctor}
+                  </p>
+
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {appt.date}
+                  </p>
+
+                  <p>
+                    <strong>Time:</strong>{" "}
+                    {appt.time}
+                  </p>
+
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    {appt.status}
+                  </p>
+
+                  <select
+                    value={appt.status}
+                    disabled={
+                      updatingId ===
                       appt._id
-                    )
-                  }
-                  style={{
-                    background:
-                      "#dc3545",
-                    color: "white",
-                    border: "none",
-                    padding:
-                      "10px 14px",
-                    borderRadius:
-                      "8px",
-                    cursor:
-                      "pointer",
-                    marginTop:
-                      "15px",
-                    width: "100%"
-                  }}
-                >
-                  Delete
-                </button>
+                    }
+                    onChange={(e) =>
+                      handleStatusChange(
+                        appt._id,
+                        e.target.value
+                      )
+                    }
+                    style={{
+                      padding: "8px",
+                      marginTop: "10px",
+                      width: "100%"
+                    }}
+                  >
+                    <option>
+                      Pending
+                    </option>
+                    <option>
+                      Confirmed
+                    </option>
+                    <option>
+                      Cancelled
+                    </option>
+                    <option>
+                      Completed
+                    </option>
+                  </select>
 
-              </div>
+                  <button
+                    onClick={() =>
+                      handleDelete(
+                        appt._id
+                      )
+                    }
+                    disabled={
+                      deletingId ===
+                      appt._id
+                    }
+                    style={{
+                      background:
+                        "#dc3545",
+                      color: "white",
+                      border: "none",
+                      padding:
+                        "10px 14px",
+                      borderRadius:
+                        "8px",
+                      cursor:
+                        "pointer",
+                      marginTop:
+                        "15px",
+                      width: "100%"
+                    }}
+                  >
+                    {deletingId ===
+                    appt._id
+                      ? "Deleting..."
+                      : "Delete"}
+                  </button>
 
-            )
-          )}
+                </div>
+              )
+            )}
 
-        </div>
-
+          </div>
+        </>
       )}
 
     </div>
-
   );
-
 };
 
 export default AdminDashboard;

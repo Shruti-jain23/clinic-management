@@ -652,6 +652,59 @@ img {
 
   margin-top: 30px;
 }
+/* =========================
+   FILTER BAR
+========================= */
+
+.filter-bar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.filter-bar input,
+.filter-bar select,
+.filter-bar button {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+}
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* =========================
+   LOADING SPINNER
+========================= */
+
+.spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #008060;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 50px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* =========================
    RESPONSIVE
@@ -708,13 +761,14 @@ img {
 
   .hero-section,
   .services-section,
-  .contact-section {
+  .contact-section,
+  .dashboard-page,
+  .page-container {
     padding: 60px 20px;
   }
 
   .dashboard-header {
     flex-direction: column;
-
     align-items: flex-start;
   }
 
@@ -734,5 +788,74 @@ img {
 
   .auth-card {
     padding: 30px 20px;
+  }
+
+  /* FILTER BAR STACKS */
+  .filter-bar {
+    grid-template-columns: 1fr;
+  }
+
+  /* APPOINTMENT CARDS STACK */
+  .dashboard-grid,
+  .card-grid,
+  .appointments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* SMALLER CARD PADDING */
+  .dashboard-card,
+  .card {
+    padding: 22px;
+  }
+
+  /* BUTTONS FULL WIDTH */
+  .book-btn,
+  .logout-btn,
+  .primary-btn,
+  .btn-primary,
+  .secondary-btn {
+    width: 100%;
+  }
+
+  /* SMALLER LOGO */
+  .logo-text {
+    font-size: 22px;
+  }
+
+  .logo-circle {
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+
+  /* BETTER INPUTS */
+  .form input,
+  .form textarea,
+  .filter-bar input,
+  .filter-bar select {
+    font-size: 15px;
+    padding: 14px;
+  }
+
+  /* HERO BUTTONS STACK */
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* STATS STACK */
+  .hero-stats {
+    flex-direction: column;
+  }
+
+  .stat-card {
+    width: 100%;
+  }
+
+  /* SMALLER DOCTOR IMAGE */
+  .doctor-card {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
   }
 }

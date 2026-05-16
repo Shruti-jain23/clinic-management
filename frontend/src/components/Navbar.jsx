@@ -74,7 +74,7 @@ const Navbar = () => {
 
   };
 
-  // Book appointment logic
+  // Book appointment
   const handleBookAppointment =
     () => {
 
@@ -98,25 +98,85 @@ const Navbar = () => {
 
       e.preventDefault();
 
-      navigate("/");
+      const section =
+        document.getElementById(
+          "services"
+        );
 
-      setTimeout(() => {
+      if (section) {
 
-        const section =
-          document.getElementById(
-            "services"
-          );
+        section.scrollIntoView({
+          behavior:
+            "smooth"
+        });
 
-        if (section) {
+      } else {
 
-          section.scrollIntoView({
-            behavior:
-              "smooth"
-          });
+        navigate("/");
 
-        }
+        setTimeout(() => {
 
-      }, 100);
+          const target =
+            document.getElementById(
+              "services"
+            );
+
+          if (target) {
+
+            target.scrollIntoView({
+              behavior:
+                "smooth"
+            });
+
+          }
+
+        }, 200);
+
+      }
+
+    };
+
+  // Scroll to about / legacy
+  const scrollToAbout =
+    (e) => {
+
+      e.preventDefault();
+
+      const section =
+        document.getElementById(
+          "about"
+        );
+
+      if (section) {
+
+        section.scrollIntoView({
+          behavior:
+            "smooth"
+        });
+
+      } else {
+
+        navigate("/");
+
+        setTimeout(() => {
+
+          const target =
+            document.getElementById(
+              "about"
+            );
+
+          if (target) {
+
+            target.scrollIntoView({
+              behavior:
+                "smooth"
+            });
+
+          }
+
+        }, 200);
+
+      }
 
     };
 
@@ -126,25 +186,41 @@ const Navbar = () => {
 
       e.preventDefault();
 
-      navigate("/");
+      const section =
+        document.getElementById(
+          "contact"
+        );
 
-      setTimeout(() => {
+      if (section) {
 
-        const section =
-          document.getElementById(
-            "contact"
-          );
+        section.scrollIntoView({
+          behavior:
+            "smooth"
+        });
 
-        if (section) {
+      } else {
 
-          section.scrollIntoView({
-            behavior:
-              "smooth"
-          });
+        navigate("/");
 
-        }
+        setTimeout(() => {
 
-      }, 100);
+          const target =
+            document.getElementById(
+              "contact"
+            );
+
+          if (target) {
+
+            target.scrollIntoView({
+              behavior:
+                "smooth"
+            });
+
+          }
+
+        }, 200);
+
+      }
 
     };
 
@@ -187,7 +263,6 @@ const Navbar = () => {
 
         </div>
 
-
         {/* NAV LINKS */}
         {!user ? (
 
@@ -216,9 +291,14 @@ const Navbar = () => {
             </li>
 
             <li>
-              <a href="#">
+              <Link
+                to="/"
+                onClick={
+                  scrollToAbout
+                }
+              >
                 About
-              </a>
+              </Link>
             </li>
 
             <li>
@@ -236,7 +316,6 @@ const Navbar = () => {
 
         ) : user.isAdmin ? (
 
-          /* ADMIN NAVBAR */
           <ul className="nav-links">
 
             <li>
@@ -260,7 +339,6 @@ const Navbar = () => {
 
         ) : (
 
-          /* USER NAVBAR */
           <ul className="nav-links">
 
             <li>
@@ -284,7 +362,6 @@ const Navbar = () => {
           </ul>
 
         )}
-
 
         {/* RIGHT BUTTON */}
         <div className="nav-actions">

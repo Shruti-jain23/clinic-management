@@ -1,4 +1,4 @@
-const Appointment = require("../models/Appointment");
+cconst Appointment = require("../models/Appointment");
 
 
 // ==============================
@@ -7,7 +7,6 @@ const Appointment = require("../models/Appointment");
 
 const bookAppointment = async (req, res) => {
   try {
-
     const {
       name,
       email,
@@ -17,7 +16,6 @@ const bookAppointment = async (req, res) => {
       userId
     } = req.body;
 
-    // Check if same doctor + same date + same time already booked
     const existingAppointment =
       await Appointment.findOne({
         doctor,
@@ -31,7 +29,6 @@ const bookAppointment = async (req, res) => {
       });
     }
 
-    // Create new appointment
     const newAppointment =
       new Appointment({
         name,
@@ -52,12 +49,10 @@ const bookAppointment = async (req, res) => {
     });
 
   } catch (error) {
-
     res.status(500).json({
       message: "Server error",
       error: error.message
     });
-
   }
 };
 
@@ -71,7 +66,6 @@ const getAppointments = async (
   res
 ) => {
   try {
-
     const appointments =
       await Appointment.find({
         userId: req.params.userId
@@ -82,14 +76,49 @@ const getAppointments = async (
     );
 
   } catch (error) {
-
     res.status(500).json({
       message: "Server error",
       error: error.message
     });
-
   }
 };
+
+
+// ==============================
+// GET BOOKED SLOTS
+// ==============================
+
+const getBookedSlots =
+  async (req, res) => {
+    try {
+
+      const {
+        doctor,
+        date
+      } = req.query;
+
+      const appointments =
+        await Appointment.find({
+          doctor,
+          date
+        });
+
+      const bookedSlots =
+        appointments.map(
+          (a) => a.time
+        );
+
+      res.status(200).json(
+        bookedSlots
+      );
+
+    } catch (error) {
+      res.status(500).json({
+        message: "Server error",
+        error: error.message
+      });
+    }
+  };
 
 
 // ==============================
@@ -110,25 +139,24 @@ const deleteAppointment =
       });
 
     } catch (error) {
-
       res.status(500).json({
         message: "Server error",
         error: error.message
       });
-
     }
   };
 
 
 // ==============================
-// UPDATE STATUS (Admin)
+// UPDATE STATUS
 // ==============================
 
 const updateAppointmentStatus =
   async (req, res) => {
     try {
 
-      const { status } = req.body;
+      const { status } =
+        req.body;
 
       const updatedAppointment =
         await Appointment.findByIdAndUpdate(
@@ -145,12 +173,10 @@ const updateAppointmentStatus =
       });
 
     } catch (error) {
-
       res.status(500).json({
         message: "Server error",
         error: error.message
       });
-
     }
   };
 
@@ -158,6 +184,7 @@ const updateAppointmentStatus =
 module.exports = {
   bookAppointment,
   getAppointments,
+  getBookedSlots,
   deleteAppointment,
   updateAppointmentStatus
 };

@@ -4,7 +4,8 @@ import React, {
 } from "react";
 
 import {
-  bookAppointment
+  bookAppointment,
+  getBookedSlots
 } from "../services/api";
 
 import { toast } from "react-toastify";
@@ -20,6 +21,9 @@ const BookAppointment = () => {
       time: "",
     });
 
+  const [bookedSlots, setBookedSlots] =
+    useState([]);
+
   // Doctor list
   const doctors = [
     "Amit Sharma",
@@ -28,7 +32,7 @@ const BookAppointment = () => {
     "Neha Kapoor"
   ];
 
-  // Available time slots
+  // All possible slots
   const availableSlots = [
     "09:00",
     "10:00",
@@ -58,6 +62,51 @@ const BookAppointment = () => {
 
   }, []);
 
+
+  // Fetch booked slots
+  useEffect(() => {
+
+    const fetchSlots = async () => {
+
+      if (
+        formData.doctor &&
+        formData.date
+      ) {
+
+        try {
+
+          const data =
+            await getBookedSlots(
+              formData.doctor,
+              formData.date
+            );
+
+          setBookedSlots(data);
+
+          // Reset selected time
+          setFormData((prev) => ({
+            ...prev,
+            time: ""
+          }));
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+
+      }
+
+    };
+
+    fetchSlots();
+
+  }, [
+    formData.doctor,
+    formData.date
+  ]);
+
+
   // Handle input change
   const handleChange = (e) => {
 
@@ -69,7 +118,8 @@ const BookAppointment = () => {
 
   };
 
-  // Handle submit
+
+  // Submit
   const handleSubmit =
     async (e) => {
 
@@ -96,12 +146,10 @@ const BookAppointment = () => {
           "Appointment booked successfully"
         ) {
 
-          // SUCCESS TOAST
           toast.success(
             "Appointment booked successfully ✅"
           );
 
-          // Reset form
           setFormData({
             name: user.name || "",
             email: user.email || "",
@@ -110,9 +158,10 @@ const BookAppointment = () => {
             time: "",
           });
 
+          setBookedSlots([]);
+
         } else {
 
-          // ERROR TOAST
           toast.error(
             response.message
           );
@@ -130,6 +179,7 @@ const BookAppointment = () => {
       }
 
     };
+
 
   return (
 
@@ -211,21 +261,30 @@ const BookAppointment = () => {
             required
             value={formData.time}
             onChange={handleChange}
+            disabled={
+              !formData.doctor ||
+              !formData.date
+            }
           >
             <option value="">
               Select Time Slot
             </option>
 
-            {availableSlots.map(
-              (slot) => (
+            {availableSlots
+              .filter(
+                (slot) =>
+                  !bookedSlots.includes(
+                    slot
+                  )
+              )
+              .map((slot) => (
                 <option
                   key={slot}
                   value={slot}
                 >
                   {slot}
                 </option>
-              )
-            )}
+              ))}
           </select>
 
           <button

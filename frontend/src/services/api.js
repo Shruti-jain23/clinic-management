@@ -84,6 +84,56 @@ export const getAppointments =
 
 
 // ==============================
+// GET BOOKED SLOTS
+// ==============================
+
+export const getBookedSlots =
+  async (doctor, date) => {
+
+    const response = await fetch(
+
+      `http://localhost:5000/api/appointments/booked-slots?doctor=${doctor}&date=${date}`
+
+    );
+
+    return response.json();
+
+};
+
+
+// ==============================
+// RESCHEDULE APPOINTMENT
+// NEW FEATURE
+// ==============================
+
+export const rescheduleAppointment =
+  async (id, date, time) => {
+
+    const response = await fetch(
+
+      `http://localhost:5000/api/appointments/reschedule/${id}`,
+
+      {
+        method: "PUT",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          date,
+          time
+        }),
+      }
+
+    );
+
+    return response.json();
+
+};
+
+
+// ==============================
 // ADMIN: GET ALL APPOINTMENTS
 // ==============================
 

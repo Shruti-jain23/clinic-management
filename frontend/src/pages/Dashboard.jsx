@@ -1,89 +1,126 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState
+} from "react";
+
 import { useNavigate } from "react-router-dom";
 import { getAppointments } from "../services/api";
 
 const Dashboard = () => {
-
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] =
+    useState(null);
 
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
-
     const storedUser =
       localStorage.getItem("user");
 
     if (storedUser) {
+      const parsedUser =
+        JSON.parse(storedUser);
 
-      setUser(JSON.parse(storedUser));
+      console.log(
+        "Logged in user:",
+        parsedUser
+      );
 
+      setUser(parsedUser);
+
+      // FIX: use _id
+      fetchAppointments(
+        parsedUser._id
+      );
     }
-
-    fetchAppointments();
-
   }, []);
 
-  const fetchAppointments = async () => {
+  const fetchAppointments =
+    async (userId) => {
+      try {
+        setLoading(true);
 
-    try {
+        const data =
+          await getAppointments(
+            userId
+          );
 
-      const data =
-        await getAppointments();
+        console.log(
+          "Appointments from API:",
+          data
+        );
 
-      setAppointments(data);
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
-  };
+        // handle if backend sends object
+        if (
+          Array.isArray(data)
+        ) {
+          setAppointments(
+            data
+          );
+        } else if (
+          data.appointments
+        ) {
+          setAppointments(
+            data.appointments
+          );
+        } else {
+          setAppointments([]);
+        }
+      } catch (error) {
+        console.error(
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
-
     <div className="dashboard-page">
-
       <div className="dashboard-header">
-
         <div>
-
           <h2 className="dashboard-heading">
             Dashboard
           </h2>
 
           {user && (
             <p className="dashboard-welcome">
-              Welcome, <span>{user.name}</span> 👋
+              Welcome,{" "}
+              <span>
+                {user.name}
+              </span>{" "}
+              👋
             </p>
           )}
-
         </div>
-
       </div>
 
       <div className="dashboard-grid">
-
         <div className="dashboard-card">
-
-          <h3>Total Appointments</h3>
+          <h3>
+            Total Appointments
+          </h3>
 
           <p className="dashboard-number">
-            {appointments.length}
+            {loading
+              ? "..."
+              : appointments.length}
           </p>
-
         </div>
-
       </div>
 
       <div className="dashboard-actions">
-
         <button
           className="btn-primary"
           onClick={() =>
-            navigate("/book-appointment")
+            navigate(
+              "/book-appointment"
+            )
           }
         >
           Book Appointment
@@ -92,18 +129,16 @@ const Dashboard = () => {
         <button
           className="secondary-btn"
           onClick={() =>
-            navigate("/appointments")
+            navigate(
+              "/appointments"
+            )
           }
         >
           View My Appointments
         </button>
-
       </div>
-
     </div>
-
   );
-
 };
 
 export default Dashboard;

@@ -23,11 +23,7 @@ router.post("/book", async (req, res) => {
     } = req.body;
 
 
-    // ==========================
-    // 1. PREVENT SAME USER
-    // BOOKING SAME APPOINTMENT
-    // ==========================
-
+    // Prevent same user duplicate booking
     const existingUserBooking =
       await Appointment.findOne({
 
@@ -52,11 +48,7 @@ router.post("/book", async (req, res) => {
     }
 
 
-    // ==========================
-    // 2. PREVENT SLOT
-    // DOUBLE BOOKING
-    // ==========================
-
+    // Prevent slot double booking
     const existingAppointment =
       await Appointment.findOne({
 
@@ -80,10 +72,7 @@ router.post("/book", async (req, res) => {
     }
 
 
-    // ==========================
-    // CREATE APPOINTMENT
-    // ==========================
-
+    // Create appointment
     const newAppointment =
       new Appointment({
 
@@ -122,21 +111,190 @@ router.post("/book", async (req, res) => {
 
 
 // ==============================
+// GET BOOKED SLOTS
+// ==============================
+
+router.get("/booked-slots", async (req, res) => {
+
+  try {
+
+    const {
+      doctor,
+      date
+    } = req.query;
+
+    const appointments =
+      await Appointment.find({
+
+        doctor,
+        date,
+
+        status: {
+          $nin: [
+            "Cancelled",
+            "Completed"
+          ]
+        }
+
+      });
+
+    const bookedSlots =
+      appointments.map(
+        (appointment) =>
+          appointment.time
+      );
+
+    res.json(bookedSlots);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+});
+
+
+// ==============================
+// RESCHEDULE APPOINTMENT
+// ==============================
+
+router.put("/reschedule/:id", async (req, res) => {
+
+  try {
+
+    const {
+      date,
+      time
+    } = req.body;
+
+    const appointment =
+      await Appointment.findById(
+        req.params.id
+      );
+
+    if (!appointment) {
+
+      return res.status(404).json({
+        message:
+          "Appointment not found"
+      });
+
+    }
+
+    // Check if new slot already booked
+    const existingAppointment =
+      await Appointment.findOne({
+
+        _id: {
+          $ne: req.params.id
+        },
+
+        doctor:
+          appointment.doctor,
+
+        date,
+        time,
+
+        status: {
+          $ne: "Cancelled"
+        }
+
+      });
+
+    if (existingAppointment) {
+
+      return res.status(400).json({
+        message:
+          "This new slot is already booked"
+      });
+
+    }
+
+    // Update appointment
+    appointment.date = date;
+    appointment.time = time;
+    appointment.status = "Pending";
+
+    await appointment.save();
+
+    res.json({
+
+      message:
+        "Appointment rescheduled successfully",
+
+      appointment
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+});
+
+
+// ==============================
 // GET LOGGED-IN USER APPOINTMENTS
+// AUTO COMPLETE OLD ONES
 // ==============================
 
 router.get("/my/:userId", async (req, res) => {
 
   try {
 
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+    // Auto mark old appointments completed
+    await Appointment.updateMany(
+      {
+
+        userId:
+          req.params.userId,
+
+        date: {
+          $lt: today
+        },
+
+        status: {
+          $in: [
+            "Pending",
+            "Confirmed"
+          ]
+        }
+
+      },
+
+      {
+        $set: {
+          status:
+            "Completed"
+        }
+      }
+    );
+
     const appointments =
       await Appointment.find({
 
-        userId: req.params.userId
+        userId:
+          req.params.userId
 
-      }).sort({ date: 1 });
+      }).sort({
+        date: 1
+      });
 
-    res.json(appointments);
+    res.json(
+      appointments
+    );
 
   } catch (error) {
 
@@ -151,17 +309,51 @@ router.get("/my/:userId", async (req, res) => {
 
 // ==============================
 // ADMIN - GET ALL APPOINTMENTS
+// AUTO COMPLETE OLD ONES
 // ==============================
 
 router.get("/all", async (req, res) => {
 
   try {
 
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+    await Appointment.updateMany(
+      {
+
+        date: {
+          $lt: today
+        },
+
+        status: {
+          $in: [
+            "Pending",
+            "Confirmed"
+          ]
+        }
+
+      },
+
+      {
+        $set: {
+          status:
+            "Completed"
+        }
+      }
+    );
+
     const appointments =
       await Appointment.find()
-      .sort({ date: 1 });
+      .sort({
+        date: 1
+      });
 
-    res.json(appointments);
+    res.json(
+      appointments
+    );
 
   } catch (error) {
 
@@ -182,7 +374,9 @@ router.put("/status/:id", async (req, res) => {
 
   try {
 
-    const { status } = req.body;
+    const {
+      status
+    } = req.body;
 
     const updatedAppointment =
       await Appointment.findByIdAndUpdate(
@@ -190,7 +384,7 @@ router.put("/status/:id", async (req, res) => {
         req.params.id,
 
         {
-          status: status
+          status
         },
 
         {
@@ -248,5 +442,6 @@ router.delete("/:id", async (req, res) => {
   }
 
 });
+
 
 module.exports = router;

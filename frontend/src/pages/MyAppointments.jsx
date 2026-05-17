@@ -11,7 +11,6 @@ import {
 import { toast } from "react-toastify";
 
 const MyAppointments = () => {
-
   const [
     appointments,
     setAppointments
@@ -31,9 +30,7 @@ const MyAppointments = () => {
 
   const fetchAppointments =
     async () => {
-
       try {
-
         const user = JSON.parse(
           localStorage.getItem("user")
         );
@@ -51,38 +48,33 @@ const MyAppointments = () => {
         setAppointments(data);
 
       } catch (error) {
-
         console.error(
           "Error fetching appointments:",
           error
         );
-
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
-  // Handle reschedule inputs
-  const handleChange =
-    (id, field, value) => {
-
-      setRescheduleData({
-        ...rescheduleData,
-        [id]: {
-          ...rescheduleData[id],
-          [field]: value
-        }
-      });
-
-    };
+  // Handle reschedule input
+  const handleChange = (
+    id,
+    field,
+    value
+  ) => {
+    setRescheduleData({
+      ...rescheduleData,
+      [id]: {
+        ...rescheduleData[id],
+        [field]: value
+      }
+    });
+  };
 
   // Reschedule appointment
   const handleReschedule =
     async (id) => {
-
       const data =
         rescheduleData[id];
 
@@ -90,16 +82,13 @@ const MyAppointments = () => {
         !data?.date ||
         !data?.time
       ) {
-
         toast.error(
           "Select new date and time"
         );
-
         return;
       }
 
       try {
-
         const response =
           await rescheduleAppointment(
             id,
@@ -111,37 +100,27 @@ const MyAppointments = () => {
           response.message ===
           "Appointment rescheduled successfully"
         ) {
-
           toast.success(
             "Appointment rescheduled ✅"
           );
 
           fetchAppointments();
-
         } else {
-
           toast.error(
             response.message
           );
-
         }
-
       } catch (error) {
-
         console.log(error);
 
         toast.error(
           "Error rescheduling"
         );
-
       }
-
     };
 
   return (
-
     <div className="dashboard-container">
-
       <h2
         className="dashboard-title"
         style={{
@@ -152,7 +131,6 @@ const MyAppointments = () => {
       </h2>
 
       {loading ? (
-
         <p
           style={{
             textAlign: "center",
@@ -161,9 +139,8 @@ const MyAppointments = () => {
         >
           Loading appointments...
         </p>
-
-      ) : appointments.length === 0 ? (
-
+      ) : appointments.length ===
+        0 ? (
         <div
           className="card"
           style={{
@@ -172,30 +149,26 @@ const MyAppointments = () => {
             textAlign: "center"
           }}
         >
-
           <h3>
-            No Appointments Found
+            No Appointments
+            Found
           </h3>
 
           <p>
-            You have not booked any
-            appointments yet.
+            You have not
+            booked any
+            appointments
+            yet.
           </p>
-
         </div>
-
       ) : (
-
         <div className="appointments-grid">
-
           {appointments.map(
             (appt) => (
-
               <div
                 key={appt._id}
                 className="card"
               >
-
                 <p>
                   <strong>
                     Patient:
@@ -214,7 +187,8 @@ const MyAppointments = () => {
                   <strong>
                     Doctor:
                   </strong>{" "}
-                  Dr. {appt.doctor}
+                  Dr.{" "}
+                  {appt.doctor}
                 </p>
 
                 <p>
@@ -235,7 +209,6 @@ const MyAppointments = () => {
                   <strong>
                     Status:
                   </strong>{" "}
-
                   <span
                     style={{
                       color:
@@ -253,123 +226,130 @@ const MyAppointments = () => {
                         "600"
                     }}
                   >
-                    {appt.status}
+                    {
+                      appt.status
+                    }
                   </span>
-
                 </p>
 
-                {/* RESCHEDULE ONLY IF NOT CANCELLED OR COMPLETED */}
+                {/* RESCHEDULE */}
                 {appt.status !==
                   "Cancelled" &&
                   appt.status !==
                   "Completed" && (
-
-                  <div
-                    style={{
-                      marginTop:
-                        "15px"
-                    }}
-                  >
-
-                    <input
-                      type="date"
-                      min={
-                        new Date()
-                          .toISOString()
-                          .split(
-                            "T"
-                          )[0]
-                      }
-                      onChange={(
-                        e
-                      ) =>
-                        handleChange(
-                          appt._id,
-                          "date",
-                          e.target
-                            .value
-                        )
-                      }
-                    />
-
-                    <select
-                      onChange={(
-                        e
-                      ) =>
-                        handleChange(
-                          appt._id,
-                          "time",
-                          e.target
-                            .value
-                        )
-                      }
-                    >
-                      <option value="">
-                        Select Time
-                      </option>
-
-                      <option>
-                        09:00
-                      </option>
-
-                      <option>
-                        10:00
-                      </option>
-
-                      <option>
-                        11:00
-                      </option>
-
-                      <option>
-                        12:00
-                      </option>
-
-                      <option>
-                        14:00
-                      </option>
-
-                      <option>
-                        15:00
-                      </option>
-
-                      <option>
-                        16:00
-                      </option>
-
-                    </select>
-
-                    <button
-                      className="btn-primary"
+                    <div
                       style={{
                         marginTop:
-                          "10px"
+                          "20px"
                       }}
-                      onClick={() =>
-                        handleReschedule(
-                          appt._id
-                        )
-                      }
                     >
-                      Reschedule
-                    </button>
+                      <div className="form-row">
 
-                  </div>
+                        {/* DATE */}
+                        <div className="input-group">
+                          <label className="input-label">
+                            New Date
+                          </label>
 
-                )}
+                          <input
+                            type="date"
+                            className="styled-input"
+                            min={
+                              new Date()
+                                .toISOString()
+                                .split(
+                                  "T"
+                                )[0]
+                            }
+                            onChange={(
+                              e
+                            ) =>
+                              handleChange(
+                                appt._id,
+                                "date",
+                                e
+                                  .target
+                                  .value
+                              )
+                            }
+                          />
+                        </div>
 
+                        {/* TIME */}
+                        <div className="input-group">
+                          <label className="input-label">
+                            New Time
+                          </label>
+
+                          <select
+                            className="styled-input"
+                            onChange={(
+                              e
+                            ) =>
+                              handleChange(
+                                appt._id,
+                                "time",
+                                e
+                                  .target
+                                  .value
+                              )
+                            }
+                          >
+                            <option value="">
+                              Select
+                              Time
+                            </option>
+
+                            <option>
+                              09:00
+                            </option>
+                            <option>
+                              10:00
+                            </option>
+                            <option>
+                              11:00
+                            </option>
+                            <option>
+                              12:00
+                            </option>
+                            <option>
+                              14:00
+                            </option>
+                            <option>
+                              15:00
+                            </option>
+                            <option>
+                              16:00
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <button
+                        className="btn-primary"
+                        style={{
+                          marginTop:
+                            "14px",
+                          width:
+                            "100%"
+                        }}
+                        onClick={() =>
+                          handleReschedule(
+                            appt._id
+                          )
+                        }
+                      >
+                        Reschedule
+                      </button>
+                    </div>
+                  )}
               </div>
-
             )
           )}
-
         </div>
-
       )}
-
     </div>
-
   );
-
 };
 
 export default MyAppointments;

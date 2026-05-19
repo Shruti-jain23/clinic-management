@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+const sendEmail =
+  require("../utils/sendEmail");
+
 const Appointment =
   require("../models/Appointment");
 
@@ -88,6 +91,23 @@ router.post("/book", async (req, res) => {
       });
 
     await newAppointment.save();
+
+
+    // Send booking email
+    await sendEmail(
+      email,
+      "Appointment Booked",
+      `Hello ${name},
+
+Your appointment has been booked successfully.
+
+Doctor: Dr. ${doctor}
+Date: ${date}
+Time: ${time}
+
+Status: Pending`
+    );
+
 
     res.status(201).json({
 
@@ -220,6 +240,23 @@ router.put("/reschedule/:id", async (req, res) => {
 
     await appointment.save();
 
+
+    // Send reschedule email
+    await sendEmail(
+      appointment.email,
+      "Appointment Rescheduled",
+      `Hello ${appointment.name},
+
+Your appointment has been rescheduled.
+
+Doctor: Dr. ${appointment.doctor}
+New Date: ${date}
+New Time: ${time}
+
+Status: Pending`
+    );
+
+
     res.json({
 
       message:
@@ -254,7 +291,6 @@ router.get("/my/:userId", async (req, res) => {
         .toISOString()
         .split("T")[0];
 
-    // Auto mark old appointments completed
     await Appointment.updateMany(
       {
 
@@ -393,6 +429,23 @@ router.put("/status/:id", async (req, res) => {
 
       );
 
+
+    // Send status update email
+    await sendEmail(
+      updatedAppointment.email,
+      "Appointment Status Updated",
+      `Hello ${updatedAppointment.name},
+
+Your appointment status has been updated.
+
+Doctor: Dr. ${updatedAppointment.doctor}
+Date: ${updatedAppointment.date}
+Time: ${updatedAppointment.time}
+
+New Status: ${status}`
+    );
+
+
     res.json({
 
       message:
@@ -422,6 +475,26 @@ router.delete("/:id", async (req, res) => {
 
   try {
 
+    const appointment =
+      await Appointment.findById(
+        req.params.id
+      );
+
+
+    // Send cancellation email
+    await sendEmail(
+      appointment.email,
+      "Appointment Cancelled",
+      `Hello ${appointment.name},
+
+Your appointment has been cancelled.
+
+Doctor: Dr. ${appointment.doctor}
+Date: ${appointment.date}
+Time: ${appointment.time}`
+    );
+
+
     await Appointment.findByIdAndDelete(
       req.params.id
     );
@@ -442,6 +515,5 @@ router.delete("/:id", async (req, res) => {
   }
 
 });
-
 
 module.exports = router;

@@ -3,6 +3,9 @@ const router = express.Router();
 const authMiddleware =
   require("../middleware/authMiddleware");
 
+const adminMiddleware =
+  require("../middleware/adminMiddleware");
+
 const sendEmail =
   require("../utils/sendEmail");
 
@@ -350,7 +353,7 @@ router.get("/my", authMiddleware,async (req, res) => {
 // AUTO COMPLETE OLD ONES
 // ==============================
 
-router.get("/all",authMiddleware, async (req, res) => {
+router.get("/all",authMiddleware, adminMiddleware, async (req, res) => {
 
   try {
 
@@ -408,7 +411,7 @@ router.get("/all",authMiddleware, async (req, res) => {
 // UPDATE APPOINTMENT STATUS
 // ==============================
 
-router.put("/status/:id",authMiddleware, async (req, res) => {
+router.put("/status/:id",authMiddleware,adminMiddleware, async (req, res) => {
 
   try {
 
@@ -473,7 +476,7 @@ New Status: ${status}`
 // DELETE APPOINTMENT
 
 
-router.delete("/:id", authMiddleware,async (req, res) => {
+router.delete("/:id", authMiddleware,adminMiddleware,async (req, res) => {
 
   try {
 

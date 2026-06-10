@@ -314,7 +314,7 @@ const Navbar = () => {
 
           </ul>
 
-        ) : user.isAdmin ? (
+        ) : user.role==="admin" ? (
 
           <ul className="nav-links">
 

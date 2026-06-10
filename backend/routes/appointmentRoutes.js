@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware =
+  require("../middleware/authMiddleware");
 
 const sendEmail =
   require("../utils/sendEmail");
@@ -12,7 +14,7 @@ const Appointment =
 // BOOK APPOINTMENT
 // ==============================
 
-router.post("/book", async (req, res) => {
+router.post("/book", authMiddleware,async (req, res) => {
 
   try {
 
@@ -21,9 +23,9 @@ router.post("/book", async (req, res) => {
       email,
       doctor,
       date,
-      time,
-      userId
+      time
     } = req.body;
+    const userId=req.user.id;
 
 
     // Prevent same user duplicate booking
@@ -181,7 +183,7 @@ router.get("/booked-slots", async (req, res) => {
 // RESCHEDULE APPOINTMENT
 // ==============================
 
-router.put("/reschedule/:id", async (req, res) => {
+router.put("/reschedule/:id",authMiddleware, async (req, res) => {
 
   try {
 
@@ -282,7 +284,7 @@ Status: Pending`
 // AUTO COMPLETE OLD ONES
 // ==============================
 
-router.get("/my/:userId", async (req, res) => {
+router.get("/my", authMiddleware,async (req, res) => {
 
   try {
 
@@ -295,7 +297,7 @@ router.get("/my/:userId", async (req, res) => {
       {
 
         userId:
-          req.params.userId,
+          req.user.id,
 
         date: {
           $lt: today
@@ -322,7 +324,7 @@ router.get("/my/:userId", async (req, res) => {
       await Appointment.find({
 
         userId:
-          req.params.userId
+          req.user.id
 
       }).sort({
         date: 1
@@ -348,7 +350,7 @@ router.get("/my/:userId", async (req, res) => {
 // AUTO COMPLETE OLD ONES
 // ==============================
 
-router.get("/all", async (req, res) => {
+router.get("/all",authMiddleware, async (req, res) => {
 
   try {
 
@@ -406,7 +408,7 @@ router.get("/all", async (req, res) => {
 // UPDATE APPOINTMENT STATUS
 // ==============================
 
-router.put("/status/:id", async (req, res) => {
+router.put("/status/:id",authMiddleware, async (req, res) => {
 
   try {
 
@@ -467,11 +469,11 @@ New Status: ${status}`
 });
 
 
-// ==============================
-// DELETE APPOINTMENT
-// ==============================
 
-router.delete("/:id", async (req, res) => {
+// DELETE APPOINTMENT
+
+
+router.delete("/:id", authMiddleware,async (req, res) => {
 
   try {
 

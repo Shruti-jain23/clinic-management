@@ -28,34 +28,55 @@ const Login = () => {
 
     try {
 
-      const response = await loginUser(formData);
+      const response =
+        await loginUser(formData);
 
-      if (response.message === "Login successful") {
+      if (
+        response.message ===
+        "Login successful"
+      ) {
 
         // Save user
         localStorage.setItem(
           "user",
-          JSON.stringify(response.user)
+          JSON.stringify(
+            response.user
+          )
         );
 
-        setMessage("Login successful ✅");
+        // Save JWT token
+        localStorage.setItem(
+          "token",
+          response.token
+        );
+
+        setMessage(
+          "Login successful ✅"
+        );
 
         // Redirect
         setTimeout(() => {
 
-          window.location.href = "/";
+          window.location.href =
+            "/";
 
         }, 1000);
 
       } else {
 
-        setMessage(response.message);
+        setMessage(
+          response.message
+        );
 
       }
 
     } catch (error) {
 
-      setMessage("Login failed");
+      console.error(error);
+
+      setMessage(
+        "Login failed"
+      );
 
     }
 
@@ -108,7 +129,11 @@ const Login = () => {
         </form>
 
         {message && (
-          <p style={{ marginTop: "15px" }}>
+          <p
+            style={{
+              marginTop: "15px"
+            }}
+          >
             {message}
           </p>
         )}
@@ -138,6 +163,7 @@ const Login = () => {
     </div>
 
   );
+
 };
 
 export default Login;

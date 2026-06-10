@@ -42,7 +42,6 @@ const MyAppointments = () => {
 
         const data =
           await getAppointments(
-            user._id
           );
 
         setAppointments(data);

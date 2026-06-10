@@ -1,202 +1,305 @@
-const BASE_URL = "http://localhost:5000/api/auth";
+const BASE_URL = "http://localhost:5000/api";
 
-export const registerUser = async (userData) => {
+// ===================================
+// HELPER FOR JWT TOKEN
+// ===================================
 
-  const response = await fetch(
-    `${BASE_URL}/register`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    }
-  );
+const getAuthHeaders = () => {
 
-  return response.json();
+  const token =
+    localStorage.getItem("token");
 
-};
+  return {
+    "Content-Type":
+      "application/json",
 
-export const loginUser = async (userData) => {
-
-  const response = await fetch(
-    `${BASE_URL}/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    }
-  );
-
-  return response.json();
+    Authorization:
+      `Bearer ${token}`
+  };
 
 };
 
 
-// ==============================
+// ===================================
+// AUTH
+// ===================================
+
+export const registerUser =
+  async (userData) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/register`,
+
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify(
+            userData
+          )
+        }
+
+      );
+
+    return response.json();
+
+};
+
+export const loginUser =
+  async (userData) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/login`,
+
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify(
+            userData
+          )
+        }
+
+      );
+
+    return response.json();
+
+};
+
+
+// ===================================
 // BOOK APPOINTMENT
-// ==============================
+// ===================================
 
 export const bookAppointment =
   async (appointmentData) => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      "http://localhost:5000/api/appointments/book",
+        `${BASE_URL}/appointments/book`,
 
-      {
-        method: "POST",
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers:
+            getAuthHeaders(),
 
-        body: JSON.stringify(
-          appointmentData
-        ),
-      }
+          body: JSON.stringify(
+            appointmentData
+          )
+        }
 
-    );
+      );
 
     return response.json();
 
 };
 
 
-// ==============================
+// ===================================
 // GET USER APPOINTMENTS
-// ==============================
+// ===================================
 
 export const getAppointments =
-  async (userId) => {
+  async () => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      `http://localhost:5000/api/appointments/my/${userId}`
+        `${BASE_URL}/appointments/my`,
 
-    );
+        {
+          headers:
+            getAuthHeaders()
+        }
+
+      );
 
     return response.json();
 
 };
 
 
-// ==============================
+// ===================================
 // GET BOOKED SLOTS
-// ==============================
+// PUBLIC ROUTE
+// ===================================
 
 export const getBookedSlots =
   async (doctor, date) => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      `http://localhost:5000/api/appointments/booked-slots?doctor=${doctor}&date=${date}`
+        `${BASE_URL}/appointments/booked-slots?doctor=${doctor}&date=${date}`
 
-    );
+      );
 
     return response.json();
 
 };
 
 
-// ==============================
+// ===================================
 // RESCHEDULE APPOINTMENT
-// NEW FEATURE
-// ==============================
+// ===================================
 
 export const rescheduleAppointment =
-  async (id, date, time) => {
+  async (
+    id,
+    date,
+    time
+  ) => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      `http://localhost:5000/api/appointments/reschedule/${id}`,
+        `${BASE_URL}/appointments/reschedule/${id}`,
 
-      {
-        method: "PUT",
+        {
+          method: "PUT",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers:
+            getAuthHeaders(),
 
-        body: JSON.stringify({
-          date,
-          time
-        }),
-      }
+          body: JSON.stringify({
+            date,
+            time
+          })
 
-    );
+        }
+
+      );
 
     return response.json();
 
 };
 
 
-// ==============================
-// ADMIN: GET ALL APPOINTMENTS
-// ==============================
+// ===================================
+// ADMIN GET ALL
+// ===================================
 
 export const getAllAppointments =
   async () => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      "http://localhost:5000/api/appointments/all"
+        `${BASE_URL}/appointments/all`,
 
-    );
+        {
+          headers:
+            getAuthHeaders()
+        }
+
+      );
 
     return response.json();
 
 };
 
 
-// ==============================
-// UPDATE APPOINTMENT STATUS
-// ==============================
+// ===================================
+// UPDATE STATUS
+// ===================================
 
 export const updateAppointmentStatus =
-  async (id, status) => {
+  async (
+    id,
+    status
+  ) => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      `http://localhost:5000/api/appointments/status/${id}`,
+        `${BASE_URL}/appointments/status/${id}`,
 
-      {
-        method: "PUT",
+        {
+          method: "PUT",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers:
+            getAuthHeaders(),
 
-        body: JSON.stringify({
-          status
-        }),
-      }
+          body: JSON.stringify({
+            status
+          })
 
-    );
+        }
+
+      );
 
     return response.json();
 
 };
 
 
-// ==============================
+// ===================================
 // DELETE APPOINTMENT
-// ==============================
+// ===================================
 
 export const deleteAppointment =
   async (id) => {
 
-    const response = await fetch(
+    const response =
+      await fetch(
 
-      `http://localhost:5000/api/appointments/${id}`,
+        `${BASE_URL}/appointments/${id}`,
 
-      {
-        method: "DELETE"
-      }
+        {
+          method: "DELETE",
 
-    );
+          headers:
+            getAuthHeaders()
+        }
+
+      );
+
+    return response.json();
+
+};
+
+
+// ===================================
+// CHATBOT
+// ===================================
+
+export const askChatbot =
+  async (message) => {
+
+    const response =
+      await fetch(
+
+        "http://localhost:5000/api/chatbot",
+
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            message
+          })
+
+        }
+
+      );
 
     return response.json();
 

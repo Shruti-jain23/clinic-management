@@ -20,13 +20,21 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      default: "patient", // patient, admin, doctor
+      default: "patient",
     },
+
+    // Forgot Password
+    resetPasswordToken: String,
+
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true,
   }
 );
 
-
-module.exports = mongoose.model("User", userSchema);
+module.exports =
+  mongoose.model(
+    "User",
+    userSchema
+  );

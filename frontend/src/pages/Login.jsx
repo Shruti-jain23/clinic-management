@@ -4,165 +4,188 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+const [formData, setFormData] = useState({
+email: "",
+password: ""
+});
 
-  const [message, setMessage] = useState("");
+const [message, setMessage] = useState("");
 
-  // Handle input change
-  const handleChange = (e) => {
+// Handle input change
+const handleChange = (e) => {
 
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+setFormData({
+  ...formData,
+  [e.target.name]: e.target.value
+});
 
-  };
 
-  // Handle submit
-  const handleSubmit = async (e) => {
+};
 
-    e.preventDefault();
+// Handle submit
+const handleSubmit = async (e) => {
 
-    try {
 
-      const response =
-        await loginUser(formData);
+e.preventDefault();
 
-      if (
-        response.message ===
-        "Login successful"
-      ) {
+try {
 
-        // Save user
-        localStorage.setItem(
-          "user",
-          JSON.stringify(
-            response.user
-          )
-        );
+  const response =
+    await loginUser(formData);
 
-        // Save JWT token
-        localStorage.setItem(
-          "token",
-          response.token
-        );
+  if (
+    response.message ===
+    "Login successful"
+  ) {
 
-        setMessage(
-          "Login successful ✅"
-        );
+    // Save user
+    localStorage.setItem(
+      "user",
+      JSON.stringify(
+        response.user
+      )
+    );
 
-        // Redirect
-        setTimeout(() => {
+    // Save JWT token
+    localStorage.setItem(
+      "token",
+      response.token
+    );
 
-          window.location.href =
-            "/";
+    setMessage(
+      "Login successful ✅"
+    );
 
-        }, 1000);
+    // Redirect
+    setTimeout(() => {
 
-      } else {
+      window.location.href =
+        "/";
 
-        setMessage(
-          response.message
-        );
+    }, 1000);
 
-      }
+  } else {
 
-    } catch (error) {
+    setMessage(
+      response.message
+    );
 
-      console.error(error);
+  }
 
-      setMessage(
-        "Login failed"
-      );
+} catch (error) {
 
-    }
+  console.error(error);
 
-  };
+  setMessage(
+    "Login failed"
+  );
 
-  return (
+}
 
-    <div className="auth-page">
 
-      <div className="auth-card">
+};
 
-        <h2 className="auth-title">
-          Welcome Back
-        </h2>
+return (
 
-        <p className="auth-subtitle">
-          Login to continue your healthcare journey
-        </p>
 
-        <form
-          className="form"
-          onSubmit={handleSubmit}
-        >
+<div className="auth-page">
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            required
-            value={formData.email}
-            onChange={handleChange}
-          />
+  <div className="auth-card">
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-          />
+    <h2 className="auth-title">
+      Welcome Back
+    </h2>
 
-          <button
-            type="submit"
-            className="btn-primary"
-          >
-            Login
-          </button>
+    <p className="auth-subtitle">
+      Login to continue your healthcare journey
+    </p>
 
-        </form>
+    <form
+      className="form"
+      onSubmit={handleSubmit}
+    >
 
-        {message && (
-          <p
-            style={{
-              marginTop: "15px"
-            }}
-          >
-            {message}
-          </p>
-        )}
+      <input
+        type="email"
+        name="email"
+        placeholder="Email Address"
+        required
+        value={formData.email}
+        onChange={handleChange}
+      />
 
-        <p
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        value={formData.password}
+        onChange={handleChange}
+      />
+
+      <p
+        style={{
+          textAlign: "right",
+          marginBottom: "15px"
+        }}
+      >
+
+        <Link
+          to="/forgot-password"
           style={{
-            marginTop: "20px",
-            color: "#475569"
+            color: "#008060",
+            fontWeight: "600"
           }}
         >
-          Don’t have an account?{" "}
+          Forgot Password?
+        </Link>
 
-          <Link
-            to="/register"
-            style={{
-              color: "#008060",
-              fontWeight: "600"
-            }}
-          >
-            Create Account
-          </Link>
+      </p>
 
-        </p>
+      <button
+        type="submit"
+        className="btn-primary"
+      >
+        Login
+      </button>
 
-      </div>
+    </form>
 
-    </div>
+    {message && (
+      <p
+        style={{
+          marginTop: "15px"
+        }}
+      >
+        {message}
+      </p>
+    )}
 
-  );
+    <p
+      style={{
+        marginTop: "20px",
+        color: "#475569"
+      }}
+    >
+      Don’t have an account?{" "}
+
+      <Link
+        to="/register"
+        style={{
+          color: "#008060",
+          fontWeight: "600"
+        }}
+      >
+        Create Account
+      </Link>
+
+    </p>
+
+  </div>
+
+</div>
+
+);
 
 };
 

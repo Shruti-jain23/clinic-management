@@ -13,12 +13,16 @@ import Register from "./pages/Register";
 import BookAppointment from "./pages/BookAppointment";
 import MyAppointments from "./pages/MyAppointments";
 import AdminDashboard from "./pages/AdminDashboard";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+
   return (
+
     <BrowserRouter>
 
       <div className="app-layout">
@@ -40,6 +44,16 @@ function App() {
             <Route
               path="/login"
               element={<Login />}
+            />
+
+            <Route
+              path="/forgot-password"
+              element={<ForgotPassword />}
+            />
+
+            <Route
+              path="/reset-password/:token"
+              element={<ResetPassword />}
             />
 
             <Route
@@ -101,12 +115,13 @@ function App() {
           closeOnClick
           pauseOnHover
         />
-       
 
       </div>
 
     </BrowserRouter>
+
   );
+
 }
 
 export default App;

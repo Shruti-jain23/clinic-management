@@ -77,6 +77,73 @@ export const loginUser =
     return response.json();
 
 };
+// ===================================
+// FORGOT PASSWORD
+// ===================================
+
+export const forgotPassword =
+  async (email) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/forgot-password`,
+
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            email
+          })
+
+        }
+
+      );
+
+    return response.json();
+
+};
+
+
+// ===================================
+// RESET PASSWORD
+// ===================================
+
+export const resetPassword =
+  async (
+    token,
+    password
+  ) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/reset-password/${token}`,
+
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            password
+          })
+
+        }
+
+      );
+
+    return response.json();
+
+};
 
 
 // ===================================

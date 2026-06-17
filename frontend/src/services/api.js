@@ -371,3 +371,64 @@ export const askChatbot =
     return response.json();
 
 };
+// ===================================
+// DOCTORS
+// ===================================
+
+export const getDoctors =
+  async () => {
+
+    const response =
+      await fetch(
+        `${BASE_URL}/doctors`
+      );
+
+    return response.json();
+
+};
+
+export const addDoctor =
+  async (doctorData) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/doctors`,
+
+        {
+          method: "POST",
+
+          headers:
+            getAuthHeaders(),
+
+          body: JSON.stringify(
+            doctorData
+          )
+        }
+
+      );
+
+    return response.json();
+
+};
+
+export const deleteDoctor =
+  async (id) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/doctors/${id}`,
+
+        {
+          method: "DELETE",
+
+          headers:
+            getAuthHeaders()
+        }
+
+      );
+
+    return response.json();
+
+};

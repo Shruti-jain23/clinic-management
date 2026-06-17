@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { bookAppointment, getBookedSlots } from "../services/api";
+import { bookAppointment, getBookedSlots, getDoctors } from "../services/api";
 import { toast } from "react-toastify";
 
 const BookAppointment = () => {
@@ -12,14 +12,15 @@ const BookAppointment = () => {
   });
 
   const [bookedSlots, setBookedSlots] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
   // Doctor list
-  const doctors = [
+  /*const doctors = [
     "Amit Sharma",
     "Priya Mehta",
     "Raj Verma",
     "Neha Kapoor",
-  ];
+  ];*/
 
   // Available time slots
   const availableSlots = [
@@ -43,6 +44,19 @@ const BookAppointment = () => {
         email: user.email || "",
       }));
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const data = await getDoctors();
+        setDoctors(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchDoctors();
   }, []);
 
   // Fetch booked slots
@@ -175,10 +189,10 @@ const BookAppointment = () => {
 
                 {doctors.map((doctor) => (
                   <option
-                    key={doctor}
-                    value={doctor}
+                    key={doctor._id}
+                    value={doctor.name}
                   >
-                    Dr. {doctor}
+                    Dr. {doctor.name}
                   </option>
                 ))}
               </select>

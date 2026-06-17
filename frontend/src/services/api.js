@@ -432,3 +432,7 @@ export const deleteDoctor =
     return response.json();
 
 };
+// ===================================
+// GET ALL DOCTORS
+// ===================================
+

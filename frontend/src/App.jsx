@@ -15,6 +15,7 @@ import MyAppointments from "./pages/MyAppointments";
 import AdminDashboard from "./pages/AdminDashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -88,6 +89,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
 
             {/* ADMIN ROUTE */}
             <Route

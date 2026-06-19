@@ -433,6 +433,80 @@ export const deleteDoctor =
 
 };
 // ===================================
-// GET ALL DOCTORS
+// PROFILE
 // ===================================
 
+export const getProfile =
+  async () => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/profile`,
+
+        {
+          headers:
+            getAuthHeaders()
+        }
+
+      );
+
+    return response.json();
+
+};
+
+export const updateProfile =
+  async (profileData) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/profile`,
+
+        {
+          method: "PUT",
+
+          headers:
+            getAuthHeaders(),
+
+          body: JSON.stringify(
+            profileData
+          )
+        }
+
+      );
+
+    return response.json();
+
+};
+
+export const changePassword =
+  async (
+    currentPassword,
+    newPassword
+  ) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/auth/change-password`,
+
+        {
+          method: "PUT",
+
+          headers:
+            getAuthHeaders(),
+
+          body: JSON.stringify({
+
+            currentPassword,
+            newPassword
+
+          })
+        }
+
+      );
+
+    return response.json();
+
+};

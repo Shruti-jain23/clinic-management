@@ -58,7 +58,9 @@ router.get(
     try {
 
       const doctors =
-        await Doctor.find();
+        await Doctor.find({
+            available:true
+        });
 
       res.json(doctors);
 

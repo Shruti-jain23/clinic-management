@@ -71,7 +71,7 @@ const Home = () => {
         <div className="hero-right">
           <div className="doctor-card">
             <img
-              src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=1200&auto=format&fit=crop"
+              src="https://plus.unsplash.com/premium_photo-1668487827017-836a5d3b1728?q=80&w=2012&auto=format&fit=crop"
               alt="Doctor"
             />
           </div>
@@ -143,7 +143,7 @@ const Home = () => {
 
           <div className="legacy-card">
             <h3>1928</h3>
-            <h4>Dr. Jain Sr.</h4>
+            <h4>Vaidya Ram Ratan Lal Jain</h4>
             <p>
               Founded Jain Clinic with a vision
               of trusted community healthcare.
@@ -152,7 +152,7 @@ const Home = () => {
 
           <div className="legacy-card">
             <h3>1955</h3>
-            <h4>Dr. R. K. Jain</h4>
+            <h4>Dr. Satish Chandra Jain</h4>
             <p>
               Expanded services and strengthened
               patient trust over generations.
@@ -161,7 +161,7 @@ const Home = () => {
 
           <div className="legacy-card">
             <h3>1985</h3>
-            <h4>Dr. S. P. Jain</h4>
+            <h4>Dr. Sushil Chandra Jain</h4>
             <p>
               Introduced specialist consultations
               and advanced diagnostics.
@@ -170,21 +170,14 @@ const Home = () => {
 
           <div className="legacy-card">
             <h3>Present</h3>
-            <h4>Current Doctors</h4>
+            <h4>Dr. Saurabh Jain</h4>
             <p>
               Serving patients with modern care,
               compassion, and excellence.
             </p>
           </div>
 
-          <div className="legacy-card">
-            <h3>Future</h3>
-            <h4>Next Generation</h4>
-            <p>
-              Continuing our healthcare legacy
-              with innovation and trust.
-            </p>
-          </div>
+          
 
         </div>
 
@@ -205,18 +198,18 @@ const Home = () => {
         <div className="services-grid">
 
           <div className="service-card">
-            <h3>Dr. Jain</h3>
+            <h3>Dr. Sushil Chandra Jain</h3>
             <p>General Physician</p>
           </div>
 
           <div className="service-card">
-            <h3>Dr. Jain</h3>
-            <p>Specialist Consultant</p>
+            <h3>Dr. Saurabh Jain</h3>
+            <p>ENT Specialist</p>
           </div>
 
           <div className="service-card">
-            <h3>Dr. Jain</h3>
-            <p>Senior Medical Advisor</p>
+            <h3>Dr. Swati Jain</h3>
+            <p>Homeopathic Physician</p>
           </div>
 
         </div>

@@ -1,0 +1,24 @@
+services:
+
+  mongo:
+    image: mongo:8
+    container_name: clinic-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: clinic-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/clinicDB
+      - JWT_SECRET=mySuperSecretKey123
+      - RESEND_API_KEY=re_Cb8TF1KV_8SNHN8hPV2XYg5Mv43Ggq8jt
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:

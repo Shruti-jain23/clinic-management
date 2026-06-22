@@ -1,5 +1,5 @@
-const BASE_URL = "http://localhost:5000/api";
-
+const BASE_URL =
+  import.meta.env.VITE_API_URL;
 // ===================================
 // HELPER FOR JWT TOKEN
 // ===================================
@@ -350,7 +350,7 @@ export const askChatbot =
     const response =
       await fetch(
 
-        "http://localhost:5000/api/chatbot",
+        "`${BASE_URL}/chatbot`",
 
         {
           method: "POST",

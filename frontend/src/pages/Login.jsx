@@ -1,192 +1,128 @@
 import React, { useState } from "react";
 import { loginUser } from "../services/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
 
-const [formData, setFormData] = useState({
-email: "",
-password: ""
-});
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
 
-// Handle input change
-const handleChange = (e) => {
+  const [message, setMessage] = useState("");
 
-setFormData({
-  ...formData,
-  [e.target.name]: e.target.value
-});
+  // Handle input change
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
+  // Handle submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-};
+    try {
 
-// Handle submit
-const handleSubmit = async (e) => {
+      const response = await loginUser(formData);
 
+      if (response.message === "Login successful") {
 
-e.preventDefault();
+        // 🔥 IMPORTANT: use AuthContext instead of localStorage only
+        login(response.user, response.token);
 
-try {
+        setMessage("Login successful ✅");
 
-  const response =
-    await loginUser(formData);
+        // 🔥 React navigation (NOT window.location)
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
 
-  if (
-    response.message ===
-    "Login successful"
-  ) {
+      } else {
+        setMessage(response.message);
+      }
 
-    // Save user
-    localStorage.setItem(
-      "user",
-      JSON.stringify(
-        response.user
-      )
-    );
+    } catch (error) {
+      console.error(error);
+      setMessage("Login failed");
+    }
+  };
 
-    // Save JWT token
-    localStorage.setItem(
-      "token",
-      response.token
-    );
+  return (
+    <div className="auth-page">
 
-    setMessage(
-      "Login successful ✅"
-    );
+      <div className="auth-card">
 
-    // Redirect
-    setTimeout(() => {
+        <h2 className="auth-title">
+          Welcome Back
+        </h2>
 
-      window.location.href =
-        "/";
+        <p className="auth-subtitle">
+          Login to continue your healthcare journey
+        </p>
 
-    }, 1000);
+        <form className="form" onSubmit={handleSubmit}>
 
-  } else {
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-    setMessage(
-      response.message
-    );
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+          />
 
-  }
+          <p style={{ textAlign: "right", marginBottom: "15px" }}>
+            <Link
+              to="/forgot-password"
+              style={{ color: "#008060", fontWeight: "600" }}
+            >
+              Forgot Password?
+            </Link>
+          </p>
 
-} catch (error) {
+          <button type="submit" className="btn-primary">
+            Login
+          </button>
 
-  console.error(error);
+        </form>
 
-  setMessage(
-    "Login failed"
+        {message && (
+          <p style={{ marginTop: "15px" }}>
+            {message}
+          </p>
+        )}
+
+        <p style={{ marginTop: "20px", color: "#475569" }}>
+          Don’t have an account?{" "}
+
+          <Link
+            to="/register"
+            style={{ color: "#008060", fontWeight: "600" }}
+          >
+            Create Account
+          </Link>
+
+        </p>
+
+      </div>
+
+    </div>
   );
-
-}
-
-
-};
-
-return (
-
-
-<div className="auth-page">
-
-  <div className="auth-card">
-
-    <h2 className="auth-title">
-      Welcome Back
-    </h2>
-
-    <p className="auth-subtitle">
-      Login to continue your healthcare journey
-    </p>
-
-    <form
-      className="form"
-      onSubmit={handleSubmit}
-    >
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email Address"
-        required
-        value={formData.email}
-        onChange={handleChange}
-      />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-        value={formData.password}
-        onChange={handleChange}
-      />
-
-      <p
-        style={{
-          textAlign: "right",
-          marginBottom: "15px"
-        }}
-      >
-
-        <Link
-          to="/forgot-password"
-          style={{
-            color: "#008060",
-            fontWeight: "600"
-          }}
-        >
-          Forgot Password?
-        </Link>
-
-      </p>
-
-      <button
-        type="submit"
-        className="btn-primary"
-      >
-        Login
-      </button>
-
-    </form>
-
-    {message && (
-      <p
-        style={{
-          marginTop: "15px"
-        }}
-      >
-        {message}
-      </p>
-    )}
-
-    <p
-      style={{
-        marginTop: "20px",
-        color: "#475569"
-      }}
-    >
-      Don’t have an account?{" "}
-
-      <Link
-        to="/register"
-        style={{
-          color: "#008060",
-          fontWeight: "600"
-        }}
-      >
-        Create Account
-      </Link>
-
-    </p>
-
-  </div>
-
-</div>
-
-);
-
 };
 
 export default Login;

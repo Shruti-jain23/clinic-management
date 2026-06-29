@@ -6,15 +6,33 @@ import React, {
 import {
   getAllAppointments,
   deleteAppointment,
-  updateAppointmentStatus
+  updateAppointmentStatus,
+  getAllDoctors,
+  addDoctor,
+  updateDoctor,
+  deleteDoctor
 } from "../services/api";
 
 const AdminDashboard = () => {
+
 
   const [
     appointments,
     setAppointments
   ] = useState([]);
+  const [
+  doctors,
+  setDoctors
+  ] = useState([]);
+  const [
+  doctorForm,
+  setDoctorForm
+] = useState({
+  name: "",
+  specialization: "",
+  email: "",
+  phone: ""
+});
 
   const [
     searchTerm,
@@ -47,8 +65,12 @@ const AdminDashboard = () => {
   ] = useState(null);
 
   useEffect(() => {
-    fetchAppointments();
-  }, []);
+
+  fetchAppointments();
+
+  fetchDoctors();
+
+}, []);
 
   const fetchAppointments =
     async () => {
@@ -72,6 +94,23 @@ const AdminDashboard = () => {
 
       }
     };
+    const fetchDoctors =
+  async () => {
+
+    try {
+
+      const data =
+        await getAllDoctors();
+
+      setDoctors(data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
 
   const handleDelete =
     async (id) => {
@@ -125,6 +164,114 @@ const AdminDashboard = () => {
 
       }
     };
+  // ============================
+// ADD DOCTOR
+// ============================
+
+const handleDoctorChange = (e) => {
+
+  setDoctorForm({
+
+    ...doctorForm,
+
+    [e.target.name]: e.target.value
+
+  });
+
+};
+
+const handleAddDoctor = async (e) => {
+
+  e.preventDefault();
+
+  try {
+
+    await addDoctor(doctorForm);
+
+    setDoctorForm({
+
+      name: "",
+
+      specialization: "",
+
+      email: "",
+
+      phone: ""
+
+    });
+
+    fetchDoctors();
+
+  }
+
+  catch (error) {
+
+    console.log(error);
+
+  }
+
+};
+
+
+// ============================
+// DELETE DOCTOR
+// ============================
+
+const handleDeleteDoctor = async (id) => {
+
+  if (!window.confirm("Delete this doctor?"))
+    return;
+
+  try {
+
+    await deleteDoctor(id);
+
+    fetchDoctors();
+
+  }
+
+  catch (error) {
+
+    console.log(error);
+
+  }
+
+};
+
+
+// ============================
+// TOGGLE AVAILABILITY
+// ============================
+
+const handleToggleAvailability =
+async (doctor) => {
+
+  try {
+
+    await updateDoctor(
+
+      doctor._id,
+
+      {
+
+        available:
+          !doctor.available
+
+      }
+
+    );
+
+    fetchDoctors();
+
+  }
+
+  catch (error) {
+
+    console.log(error);
+
+  }
+
+};
 
   // ============================
   // DASHBOARD STATS
@@ -271,6 +418,8 @@ const AdminDashboard = () => {
       link
     );
   };
+  console.log(doctors);
+
 
   return (
 
@@ -512,6 +661,177 @@ const AdminDashboard = () => {
             )}
 
           </div>
+          {/* ============================
+DOCTOR MANAGEMENT
+============================ */}
+
+<div
+  style={{
+    marginTop: "60px"
+  }}
+>
+
+  <h2
+    style={{
+      marginBottom: "20px"
+    }}
+  >
+    Doctor Management
+  </h2>
+
+  {/* ADD DOCTOR */}
+
+  <form
+    onSubmit={handleAddDoctor}
+    style={{
+      display: "grid",
+      gridTemplateColumns:
+        "repeat(auto-fit,minmax(220px,1fr))",
+      gap: "15px",
+      marginBottom: "30px"
+    }}
+  >
+
+    <input
+      type="text"
+      name="name"
+      placeholder="Doctor Name"
+      value={doctorForm.name}
+      onChange={handleDoctorChange}
+      required
+    />
+
+    <input
+      type="email"
+      name="email"
+      placeholder="Email"
+      value={doctorForm.email}
+      onChange={handleDoctorChange}
+      required
+    />
+
+    <input
+      type="text"
+      name="phone"
+      placeholder="Phone"
+      value={doctorForm.phone}
+      onChange={handleDoctorChange}
+      required
+    />
+
+    <input
+      type="text"
+      name="specialization"
+      placeholder="Specialization"
+      value={doctorForm.specialization}
+      onChange={handleDoctorChange}
+      required
+    />
+
+    <button
+      type="submit"
+      className="btn-primary"
+    >
+      Add Doctor
+    </button>
+
+  </form>
+
+  {/* DOCTOR LIST */}
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns:
+        "repeat(auto-fit,minmax(260px,1fr))",
+      gap: "20px"
+    }}
+  >
+
+    {doctors.map((doctor) => (
+
+      <div
+        key={doctor._id}
+        className="card"
+      >
+
+        <h3>
+          Dr. {doctor.name}
+        </h3>
+
+        <p>
+          {doctor.specialization}
+        </p>
+
+        <p>
+          {doctor.email}
+        </p>
+
+        <p>
+          {doctor.phone}
+        </p>
+
+        <p>
+
+          <strong>Status:</strong>{" "}
+
+          {doctor.available
+            ? "Available ✅"
+            : "Unavailable ❌"}
+
+        </p>
+
+        <button
+          className="btn-primary"
+          onClick={() =>
+            handleToggleAvailability(
+              doctor
+            )
+          }
+          style={{
+            width: "100%",
+            marginTop: "10px"
+          }}
+        >
+
+          {doctor.available
+            ? "Make Unavailable"
+            : "Make Available"}
+
+        </button>
+
+        <button
+
+          onClick={() =>
+            handleDeleteDoctor(
+              doctor._id
+            )
+          }
+
+          style={{
+            width: "100%",
+            marginTop: "10px",
+            background: "#dc3545",
+            color: "white",
+            border: "none",
+            padding: "10px",
+            borderRadius: "8px",
+            cursor: "pointer"
+          }}
+
+        >
+
+          Delete Doctor
+
+        </button>
+
+      </div>
+
+    ))}
+
+  </div>
+
+</div>
         </>
       )}
 

@@ -1,17 +1,14 @@
 const express = require("express");
 
-const router =
-  express.Router();
+const router = express.Router();
 
-const Doctor =
-  require("../models/Doctor");
+const Doctor = require("../models/Doctor");
 
 const authMiddleware =
   require("../middleware/authMiddleware");
 
 const checkRole =
   require("../middleware/checkRole");
-
 
 // ======================
 // ADD DOCTOR
@@ -22,23 +19,45 @@ router.post(
   authMiddleware,
   checkRole(["admin"]),
   async (req, res) => {
-
     try {
-
       const doctor =
-        await Doctor.create(
-          req.body
-        );
+        await Doctor.create(req.body);
 
-      res.status(201).json(
-        doctor
-      );
+      res.status(201).json(doctor);
 
     } catch (error) {
 
       res.status(500).json({
-        message:
-          error.message
+        message: error.message
+      });
+
+    }
+  }
+);
+
+// ======================
+// ADMIN GET ALL DOCTORS
+// IMPORTANT: KEEP THIS
+// ABOVE "/"
+// ======================
+
+router.get(
+  "/admin/all",
+  authMiddleware,
+  checkRole(["admin"]),
+  async (req, res) => {
+
+    try {
+
+      const doctors =
+        await Doctor.find();
+
+      res.json(doctors);
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
       });
 
     }
@@ -46,9 +65,8 @@ router.post(
   }
 );
 
-
 // ======================
-// GET ALL DOCTORS
+// PUBLIC GET AVAILABLE DOCTORS
 // ======================
 
 router.get(
@@ -59,7 +77,7 @@ router.get(
 
       const doctors =
         await Doctor.find({
-            available:true
+          available: true
         });
 
       res.json(doctors);
@@ -67,15 +85,13 @@ router.get(
     } catch (error) {
 
       res.status(500).json({
-        message:
-          error.message
+        message: error.message
       });
 
     }
 
   }
 );
-
 
 // ======================
 // UPDATE DOCTOR
@@ -91,15 +107,11 @@ router.put(
 
       const doctor =
         await Doctor.findByIdAndUpdate(
-
           req.params.id,
-
           req.body,
-
           {
             new: true
           }
-
         );
 
       res.json(doctor);
@@ -107,15 +119,13 @@ router.put(
     } catch (error) {
 
       res.status(500).json({
-        message:
-          error.message
+        message: error.message
       });
 
     }
 
   }
 );
-
 
 // ======================
 // DELETE DOCTOR
@@ -141,8 +151,7 @@ router.delete(
     } catch (error) {
 
       res.status(500).json({
-        message:
-          error.message
+        message: error.message
       });
 
     }
@@ -150,5 +159,4 @@ router.delete(
   }
 );
 
-module.exports =
-  router;
+module.exports = router;

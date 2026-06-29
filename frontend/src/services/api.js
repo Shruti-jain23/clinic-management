@@ -386,6 +386,28 @@ export const getDoctors =
     return response.json();
 
 };
+// ===================================
+// ADMIN GET ALL DOCTORS
+// ===================================
+
+export const getAllDoctors =
+  async () => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/doctors/admin/all`,
+
+        {
+          headers:
+            getAuthHeaders()
+        }
+
+      );
+
+    return response.json();
+
+};
 
 export const addDoctor =
   async (doctorData) => {
@@ -503,6 +525,33 @@ export const changePassword =
             newPassword
 
           })
+        }
+
+      );
+
+    return response.json();
+
+};
+export const updateDoctor =
+  async (
+    id,
+    doctorData
+  ) => {
+
+    const response =
+      await fetch(
+
+        `${BASE_URL}/doctors/${id}`,
+
+        {
+          method: "PUT",
+
+          headers:
+            getAuthHeaders(),
+
+          body: JSON.stringify(
+            doctorData
+          )
         }
 
       );

@@ -3,15 +3,12 @@ import { Navigate } from "react-router-dom";
 
 const AdminRoute = ({ children }) => {
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  // Must be logged in and have admin role
-  if (
-    !user ||
-    user.role !== "admin"
-  ) {
+  console.log("AdminRoute user:", user);
+
+  if (!user || user.role !== "admin") {
+    console.log("Redirecting because user is not admin");
     return <Navigate to="/" />;
   }
 

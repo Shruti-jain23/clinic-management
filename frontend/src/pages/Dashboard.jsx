@@ -54,8 +54,6 @@ const Dashboard = () => {
           "Appointments from API:",
           data
         );
-
-        // handle if backend sends object
         if (
           Array.isArray(data)
         ) {
@@ -94,7 +92,7 @@ const Dashboard = () => {
               <span>
                 {user.name}
               </span>{" "}
-              👋
+              
             </p>
           )}
         </div>

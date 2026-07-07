@@ -164,9 +164,8 @@ const AdminDashboard = () => {
 
       }
     };
-  // ============================
+
 // ADD DOCTOR
-// ============================
 
 const handleDoctorChange = (e) => {
 
@@ -213,9 +212,9 @@ const handleAddDoctor = async (e) => {
 };
 
 
-// ============================
+
 // DELETE DOCTOR
-// ============================
+
 
 const handleDeleteDoctor = async (id) => {
 
@@ -238,10 +237,7 @@ const handleDeleteDoctor = async (id) => {
 
 };
 
-
-// ============================
 // TOGGLE AVAILABILITY
-// ============================
 
 const handleToggleAvailability =
 async (doctor) => {
@@ -273,9 +269,7 @@ async (doctor) => {
 
 };
 
-  // ============================
   // DASHBOARD STATS
-  // ============================
 
   const totalAppointments =
     appointments.length;
@@ -304,9 +298,7 @@ async (doctor) => {
         appt.status === "Cancelled"
     ).length;
 
-  // ============================
   // FILTER + SORT
-  // ============================
 
   const filteredAppointments =
     appointments
@@ -348,10 +340,8 @@ async (doctor) => {
           : dateA - dateB;
       });
 
-  // ============================
   // EXPORT CSV
-  // ============================
-
+  
   const exportToCSV = () => {
 
     const headers = [
@@ -661,9 +651,7 @@ async (doctor) => {
             )}
 
           </div>
-          {/* ============================
-DOCTOR MANAGEMENT
-============================ */}
+          {/*DOCTOR MANAGEMENT*/}
 
 <div
   style={{
@@ -776,8 +764,8 @@ DOCTOR MANAGEMENT
           <strong>Status:</strong>{" "}
 
           {doctor.available
-            ? "Available ✅"
-            : "Unavailable ❌"}
+            ? "Available "
+            : "Unavailable "}
 
         </p>
 

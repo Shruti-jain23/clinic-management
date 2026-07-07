@@ -5,8 +5,6 @@ import { useAuth } from "../context/AuthContext";
 const Navbar = () => {
 
   const navigate = useNavigate();
-
-  // 🔥 GLOBAL AUTH STATE (NO localStorage hacks)
   const { user, logout } = useAuth();
 
   // Book appointment

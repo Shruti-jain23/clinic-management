@@ -52,8 +52,8 @@ const Home = () => {
 
           <div className="hero-stats">
             <div className="stat-card">
-              <h3>25+</h3>
-              <p>Doctors</p>
+              <h3>3+</h3>
+              <p>Healthcare Systems</p>
             </div>
 
             <div className="stat-card">
@@ -62,8 +62,8 @@ const Home = () => {
             </div>
 
             <div className="stat-card">
-              <h3>24/7</h3>
-              <p>Support</p>
+              <h3>100 years</h3>
+              <p>Legacy of Care</p>
             </div>
           </div>
         </div>
@@ -160,7 +160,7 @@ const Home = () => {
           </div>
 
           <div className="legacy-card">
-            <h3>1985</h3>
+            <h3>1975</h3>
             <h4>Dr. Sushil Chandra Jain</h4>
             <p>
               Introduced specialist consultations
@@ -204,7 +204,7 @@ const Home = () => {
 
           <div className="service-card">
             <h3>Dr. Saurabh Jain</h3>
-            <p>ENT Specialist</p>
+            <p>General Physician & ENT Specialist</p>
           </div>
 
           <div className="service-card">
@@ -241,17 +241,17 @@ const Home = () => {
             <div className="contact-info">
 
               <div className="contact-item">
-                <h4>📍 Address</h4>
+                <h4> Address</h4>
                 <p>Opp City Post Office, Mainpuri</p>
               </div>
 
               <div className="contact-item">
-                <h4>📞 Phone</h4>
+                <h4> Phone</h4>
                 <p>+91 9876543210</p>
               </div>
 
               <div className="contact-item">
-                <h4>✉ Email</h4>
+                <h4> Email</h4>
                 <p>support@jainclinic.com</p>
               </div>
 

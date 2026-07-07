@@ -28,17 +28,10 @@ const Login = () => {
     e.preventDefault();
 
     try {
-
       const response = await loginUser(formData);
-
       if (response.message === "Login successful") {
-
-        // 🔥 IMPORTANT: use AuthContext instead of localStorage only
         login(response.user, response.token);
-
-        setMessage("Login successful ✅");
-
-        // 🔥 React navigation (NOT window.location)
+        setMessage("Login successful ");
         setTimeout(() => {
           navigate("/");
         }, 500);

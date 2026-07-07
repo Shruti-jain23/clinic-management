@@ -32,9 +32,7 @@ router.post(
   "/reset-password/:token",
   resetPassword
 );
-// ==============================
 // PROFILE
-// ==============================
 
 router.get(
   "/profile",

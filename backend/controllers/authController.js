@@ -77,7 +77,6 @@ const registerUser = async (req, res) => {
 
 };
 
-
 // LOGIN USER
 
 const loginUser = async (
@@ -108,7 +107,6 @@ const loginUser = async (
 
     }
     
-
     // CHECK HASHED PASSWORD
 
     const isMatch =
@@ -337,9 +335,8 @@ const resetPassword = async (
   }
 
 };
-// ==============================
+
 // GET PROFILE
-// ==============================
 
 const getProfile = async (
   req,
@@ -375,10 +372,7 @@ const getProfile = async (
 
 };
 
-
-// ==============================
 // UPDATE PROFILE
-// ==============================
 
 const updateProfile = async (
   req,
@@ -448,10 +442,7 @@ const updateProfile = async (
 
 };
 
-
-// ==============================
 // CHANGE PASSWORD
-// ==============================
 
 const changePassword = async (
   req,

@@ -1,9 +1,5 @@
 const Appointment = require("../models/Appointment");
-
-
-// ==============================
 // BOOK APPOINTMENT
-// ==============================
 
 const bookAppointment = async (req, res) => {
   try {
@@ -55,11 +51,7 @@ const bookAppointment = async (req, res) => {
     });
   }
 };
-
-
-// ==============================
 // GET USER APPOINTMENTS
-// ==============================
 
 const getAppointments = async (
   req,
@@ -82,11 +74,7 @@ const getAppointments = async (
     });
   }
 };
-
-
-// ==============================
 // GET BOOKED SLOTS
-// ==============================
 
 const getBookedSlots =
   async (req, res) => {
@@ -119,11 +107,7 @@ const getBookedSlots =
       });
     }
   };
-
-
-// ==============================
 // DELETE APPOINTMENT
-// ==============================
 
 const deleteAppointment =
   async (req, res) => {
@@ -146,11 +130,7 @@ const deleteAppointment =
     }
   };
 
-
-// ==============================
 // UPDATE STATUS
-// ==============================
-
 const updateAppointmentStatus =
   async (req, res) => {
     try {

@@ -118,7 +118,7 @@ const Profile = () => {
           );
 
           toast.success(
-            "Profile updated successfully ✅"
+            "Profile updated successfully "
           );
 
         } else {
@@ -176,7 +176,7 @@ const Profile = () => {
         ) {
 
           toast.success(
-            "Password changed successfully ✅"
+            "Password changed successfully "
           );
 
           setPasswordData({

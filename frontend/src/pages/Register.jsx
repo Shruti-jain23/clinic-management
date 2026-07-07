@@ -39,7 +39,7 @@ const Register = () => {
       ) {
 
         setMessage(
-          "Registration successful ✅"
+          "Registration successful "
         );
 
         // Redirect to login

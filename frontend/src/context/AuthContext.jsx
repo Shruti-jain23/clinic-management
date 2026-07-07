@@ -6,7 +6,6 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
 
-  // Load user once on app start
   useEffect(() => {
 
     const storedUser = localStorage.getItem("user");
@@ -17,17 +16,17 @@ export const AuthProvider = ({ children }) => {
 
   }, []);
 
-  // LOGIN function
+  // LOGIN 
   const login = (userData, token) => {
 
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", token);
 
-    setUser(userData); // 🔥 instant UI update
+    setUser(userData); 
 
   };
 
-  // LOGOUT function
+  // LOGOUT
   const logout = () => {
 
     localStorage.removeItem("user");

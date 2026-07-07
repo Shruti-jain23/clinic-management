@@ -12,10 +12,7 @@ const sendEmail =
 const Appointment =
   require("../models/Appointment");
 
-
-// ==============================
 // BOOK APPOINTMENT
-// ==============================
 
 router.post("/book", authMiddleware,async (req, res) => {
 
@@ -31,7 +28,7 @@ router.post("/book", authMiddleware,async (req, res) => {
     const userId=req.user.id;
 
 
-    // Prevent same user duplicate booking
+    //same user duplicate booking
     const existingUserBooking =
       await Appointment.findOne({
 
@@ -56,7 +53,7 @@ router.post("/book", authMiddleware,async (req, res) => {
     }
 
 
-    // Prevent slot double booking
+    //slot double booking
     const existingAppointment =
       await Appointment.findOne({
 
@@ -139,11 +136,7 @@ Status: Pending`
   }
 
 });
-
-
-// ==============================
 // GET BOOKED SLOTS
-// ==============================
 
 router.get("/booked-slots", async (req, res) => {
 
@@ -186,11 +179,7 @@ router.get("/booked-slots", async (req, res) => {
   }
 
 });
-
-
-// ==============================
 // RESCHEDULE APPOINTMENT
-// ==============================
 
 router.put("/reschedule/:id",authMiddleware, async (req, res) => {
 
@@ -286,12 +275,8 @@ Status: Pending`
   }
 
 });
-
-
-// ==============================
 // GET LOGGED-IN USER APPOINTMENTS
 // AUTO COMPLETE OLD ONES
-// ==============================
 
 router.get("/my", authMiddleware,async (req, res) => {
 
@@ -353,11 +338,9 @@ router.get("/my", authMiddleware,async (req, res) => {
 
 });
 
-
-// ==============================
 // ADMIN - GET ALL APPOINTMENTS
 // AUTO COMPLETE OLD ONES
-// ==============================
+
 
 router.get("/all",authMiddleware, checkRole([ "admin"]), async (req, res) => {
 
@@ -411,11 +394,7 @@ router.get("/all",authMiddleware, checkRole([ "admin"]), async (req, res) => {
   }
 
 });
-
-
-// ==============================
 // UPDATE APPOINTMENT STATUS
-// ==============================
 
 router.put("/status/:id",authMiddleware,checkRole(["admin"]), async (req, res) => {
 
@@ -476,11 +455,7 @@ New Status: ${status}`
   }
 
 });
-
-
-
 // DELETE APPOINTMENT
-
 
 router.delete("/:id", authMiddleware,checkRole(["admin"]),async (req, res) => {
 

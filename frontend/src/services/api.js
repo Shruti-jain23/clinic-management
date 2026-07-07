@@ -1,8 +1,7 @@
 const BASE_URL =
   `${import.meta.env.VITE_API_URL}/api`;
-// ===================================
-// HELPER FOR JWT TOKEN
-// ===================================
+
+// Helper JWT 
 
 const getAuthHeaders = () => {
 
@@ -19,10 +18,7 @@ const getAuthHeaders = () => {
 
 };
 
-
-// ===================================
 // AUTH
-// ===================================
 
 export const registerUser =
   async (userData) => {
@@ -77,9 +73,8 @@ export const loginUser =
     return response.json();
 
 };
-// ===================================
+
 // FORGOT PASSWORD
-// ===================================
 
 export const forgotPassword =
   async (email) => {
@@ -109,10 +104,7 @@ export const forgotPassword =
 
 };
 
-
-// ===================================
 // RESET PASSWORD
-// ===================================
 
 export const resetPassword =
   async (
@@ -145,10 +137,7 @@ export const resetPassword =
 
 };
 
-
-// ===================================
 // BOOK APPOINTMENT
-// ===================================
 
 export const bookAppointment =
   async (appointmentData) => {
@@ -175,10 +164,7 @@ export const bookAppointment =
 
 };
 
-
-// ===================================
 // GET USER APPOINTMENTS
-// ===================================
 
 export const getAppointments =
   async () => {
@@ -199,11 +185,7 @@ export const getAppointments =
 
 };
 
-
-// ===================================
 // GET BOOKED SLOTS
-// PUBLIC ROUTE
-// ===================================
 
 export const getBookedSlots =
   async (doctor, date) => {
@@ -219,10 +201,7 @@ export const getBookedSlots =
 
 };
 
-
-// ===================================
 // RESCHEDULE APPOINTMENT
-// ===================================
 
 export const rescheduleAppointment =
   async (
@@ -255,10 +234,7 @@ export const rescheduleAppointment =
 
 };
 
-
-// ===================================
 // ADMIN GET ALL
-// ===================================
 
 export const getAllAppointments =
   async () => {
@@ -279,10 +255,7 @@ export const getAllAppointments =
 
 };
 
-
-// ===================================
 // UPDATE STATUS
-// ===================================
 
 export const updateAppointmentStatus =
   async (
@@ -313,10 +286,7 @@ export const updateAppointmentStatus =
 
 };
 
-
-// ===================================
 // DELETE APPOINTMENT
-// ===================================
 
 export const deleteAppointment =
   async (id) => {
@@ -339,10 +309,7 @@ export const deleteAppointment =
 
 };
 
-
-// ===================================
 // CHATBOT
-// ===================================
 
 export const askChatbot =
   async (message) => {
@@ -371,9 +338,8 @@ export const askChatbot =
     return response.json();
 
 };
-// ===================================
+
 // DOCTORS
-// ===================================
 
 export const getDoctors =
   async () => {
@@ -386,9 +352,8 @@ export const getDoctors =
     return response.json();
 
 };
-// ===================================
+
 // ADMIN GET ALL DOCTORS
-// ===================================
 
 export const getAllDoctors =
   async () => {
@@ -454,9 +419,8 @@ export const deleteDoctor =
     return response.json();
 
 };
-// ===================================
+
 // PROFILE
-// ===================================
 
 export const getProfile =
   async () => {

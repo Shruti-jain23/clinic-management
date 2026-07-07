@@ -10,10 +10,8 @@ const authMiddleware =
 const checkRole =
   require("../middleware/checkRole");
 
-// ======================
-// ADD DOCTOR
-// ======================
 
+// ADD DOCTOR
 router.post(
   "/",
   authMiddleware,
@@ -34,12 +32,6 @@ router.post(
     }
   }
 );
-
-// ======================
-// ADMIN GET ALL DOCTORS
-// IMPORTANT: KEEP THIS
-// ABOVE "/"
-// ======================
 
 router.get(
   "/admin/all",
@@ -65,9 +57,7 @@ router.get(
   }
 );
 
-// ======================
-// PUBLIC GET AVAILABLE DOCTORS
-// ======================
+//GET AVAILABLE DOCTORS
 
 router.get(
   "/",
@@ -92,10 +82,7 @@ router.get(
 
   }
 );
-
-// ======================
 // UPDATE DOCTOR
-// ======================
 
 router.put(
   "/:id",
@@ -126,10 +113,7 @@ router.put(
 
   }
 );
-
-// ======================
 // DELETE DOCTOR
-// ======================
 
 router.delete(
   "/:id",

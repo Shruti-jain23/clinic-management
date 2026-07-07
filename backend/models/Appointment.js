@@ -50,12 +50,9 @@ const appointmentSchema =
   }, {
     timestamps: true
   });
-
-
-// ===================================
 // PREVENT DOUBLE BOOKING
 // doctor + date + time must be unique
-// ===================================
+
 appointmentSchema.index(
   {
     doctor: 1,

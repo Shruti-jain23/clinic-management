@@ -100,7 +100,7 @@ const MyAppointments = () => {
           "Appointment rescheduled successfully"
         ) {
           toast.success(
-            "Appointment rescheduled ✅"
+            "Appointment rescheduled "
           );
 
           fetchAppointments();

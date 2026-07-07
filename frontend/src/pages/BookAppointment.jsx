@@ -21,8 +21,6 @@ const BookAppointment = () => {
     "Raj Verma",
     "Neha Kapoor",
   ];*/
-
-  // Available time slots
   const availableSlots = [
     "09:00",
     "10:00",
@@ -114,7 +112,7 @@ const BookAppointment = () => {
         "Appointment booked successfully"
       ) {
         toast.success(
-          "Appointment booked successfully ✅"
+          "Appointment booked successfully "
         );
 
         setFormData({

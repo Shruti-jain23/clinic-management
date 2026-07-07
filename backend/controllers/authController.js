@@ -522,4 +522,4 @@ module.exports = {
   updateProfile,
   changePassword
 
-};
+}; 

@@ -1,170 +1,507 @@
 const Appointment = require("../models/Appointment");
+
+const sendEmail =
+require("../utils/sendEmail");
+
 // BOOK APPOINTMENT
 
 const bookAppointment = async (req, res) => {
+
   try {
+
     const {
       name,
       email,
       doctor,
       date,
-      time,
-      userId
+      time
     } = req.body;
+    const userId=req.user.id;
 
-    const existingAppointment =
+
+    //same user duplicate booking
+    const existingUserBooking =
       await Appointment.findOne({
+
+        userId,
         doctor,
         date,
-        time
+        time,
+
+        status: {
+          $ne: "Cancelled"
+        }
+
+      });
+
+    if (existingUserBooking) {
+
+      return res.status(400).json({
+        message:
+          "You already booked this appointment"
+      });
+
+    }
+
+
+    //slot double booking
+    const existingAppointment =
+      await Appointment.findOne({
+
+        doctor,
+        date,
+        time,
+
+        status: {
+          $ne: "Cancelled"
+        }
+
       });
 
     if (existingAppointment) {
+
       return res.status(400).json({
-        message: "This slot is already booked"
+        message:
+          "This slot is already booked"
       });
+
     }
 
+
+    // Create appointment
     const newAppointment =
       new Appointment({
+
         name,
         email,
         doctor,
         date,
         time,
         userId,
+
         status: "Pending"
+
       });
 
     await newAppointment.save();
 
-    res.status(201).json({
-      message:
-        "Appointment booked successfully",
-      appointment: newAppointment
-    });
 
-  } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-      error: error.message
-    });
-  }
-};
-// GET USER APPOINTMENTS
+    // Send booking email
+    await sendEmail(
+      email,
+      "Appointment Booked",
+      `Hello ${name},
 
-const getAppointments = async (
-  req,
-  res
-) => {
-  try {
-    const appointments =
-      await Appointment.find({
-        userId: req.params.userId
-      });
+  Your appointment has been booked successfully.
 
-    res.status(200).json(
-      appointments
+      Doctor: Dr. ${doctor}
+      Date: ${date}
+      Time: ${time}
+
+      Status: Pending`
     );
 
-  } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-      error: error.message
+
+    res.status(201).json({
+
+      message:
+        "Appointment booked successfully",
+
+      appointment:
+        newAppointment
+
     });
+
+  } catch (error) {
+    if(error.code===11000){
+      return res.status(400).json({
+        message:
+        "This slot is already booked"
+      });
+    }
+
+    res.status(500).json({
+      message: error.message
+    });
+
   }
+
 };
+
 // GET BOOKED SLOTS
 
 const getBookedSlots =
   async (req, res) => {
-    try {
 
-      const {
+  try {
+
+    const {
+      doctor,
+      date
+    } = req.query;
+
+    const appointments =
+      await Appointment.find({
+
         doctor,
-        date
-      } = req.query;
+        date,
 
-      const appointments =
-        await Appointment.find({
-          doctor,
-          date
-        });
+        status: {
+          $nin: [
+            "Cancelled",
+            "Completed"
+          ]
+        }
 
-      const bookedSlots =
-        appointments.map(
-          (a) => a.time
-        );
+      });
 
-      res.status(200).json(
-        bookedSlots
+    const bookedSlots =
+      appointments.map(
+        (appointment) =>
+          appointment.time
       );
 
-    } catch (error) {
-      res.status(500).json({
-        message: "Server error",
-        error: error.message
-      });
-    }
-  };
+    res.json(bookedSlots);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
 // DELETE APPOINTMENT
 
 const deleteAppointment =
   async (req, res) => {
-    try {
 
-      await Appointment.findByIdAndDelete(
+  try {
+
+    const appointment =
+      await Appointment.findById(
         req.params.id
       );
 
-      res.status(200).json({
+
+    // Send cancellation email
+    await sendEmail(
+      appointment.email,
+      "Appointment Cancelled",
+      `Hello ${appointment.name},
+
+Your appointment has been cancelled.
+
+Doctor: Dr. ${appointment.doctor}
+Date: ${appointment.date}
+Time: ${appointment.time}`
+    );
+
+
+    await Appointment.findByIdAndDelete(
+      req.params.id
+    );
+
+    res.json({
+
+      message:
+        "Appointment deleted successfully"
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+//Reschedule apoointment
+
+const rescheduleAppointment=async (req, res) => {
+
+  try {
+
+    const {
+      date,
+      time
+    } = req.body;
+
+    const appointment =
+      await Appointment.findById(
+        req.params.id
+      );
+
+    if (!appointment) {
+
+      return res.status(404).json({
         message:
-          "Appointment deleted successfully"
+          "Appointment not found"
       });
 
-    } catch (error) {
-      res.status(500).json({
-        message: "Server error",
-        error: error.message
-      });
     }
-  };
+
+    // Check if new slot already booked
+    const existingAppointment =
+      await Appointment.findOne({
+
+        _id: {
+          $ne: req.params.id
+        },
+
+        doctor:
+          appointment.doctor,
+
+        date,
+        time,
+
+        status: {
+          $ne: "Cancelled"
+        }
+
+      });
+
+    if (existingAppointment) {
+
+      return res.status(400).json({
+        message:
+          "This new slot is already booked"
+      });
+
+    }
+
+    // Update appointment
+    appointment.date = date;
+    appointment.time = time;
+    appointment.status = "Pending";
+
+    await appointment.save();
+
+
+    // Send reschedule email
+    await sendEmail(
+      appointment.email,
+      "Appointment Rescheduled",
+      `Hello ${appointment.name},
+
+Your appointment has been rescheduled.
+
+Doctor: Dr. ${appointment.doctor}
+New Date: ${date}
+New Time: ${time}
+
+Status: Pending`
+    );
+
+
+    res.json({
+
+      message:
+        "Appointment rescheduled successfully",
+
+      appointment
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+
 
 // UPDATE STATUS
 const updateAppointmentStatus =
   async (req, res) => {
-    try {
 
-      const { status } =
-        req.body;
+  try {
 
-      const updatedAppointment =
-        await Appointment.findByIdAndUpdate(
-          req.params.id,
-          { status },
-          { new: true }
-        );
+    const {
+      status
+    } = req.body;
 
-      res.status(200).json({
-        message:
-          "Status updated successfully",
-        appointment:
-          updatedAppointment
+    const updatedAppointment =
+      await Appointment.findByIdAndUpdate(
+
+        req.params.id,
+
+        {
+          status
+        },
+
+        {
+          new: true
+        }
+
+      );
+
+
+    // Send status update email
+    await sendEmail(
+      updatedAppointment.email,
+      "Appointment Status Updated",
+      `Hello ${updatedAppointment.name},
+
+Your appointment status has been updated.
+
+Doctor: Dr. ${updatedAppointment.doctor}
+Date: ${updatedAppointment.date}
+Time: ${updatedAppointment.time}
+
+New Status: ${status}`
+    );
+
+
+    res.json({
+
+      message:
+        "Status updated successfully",
+
+      appointment:
+        updatedAppointment
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+//// GET LOGGED-IN USER APPOINTMENTS
+// AUTO COMPLETE OLD ONES
+
+const getUserAppointments=async (req, res) => {
+
+  try {
+
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+    await Appointment.updateMany(
+      {
+
+        userId:
+          req.user.id,
+
+        date: {
+          $lt: today
+        },
+
+        status: {
+          $in: [
+            "Pending",
+            "Confirmed"
+          ]
+        }
+
+      },
+
+      {
+        $set: {
+          status:
+            "Completed"
+        }
+      }
+    );
+
+    const appointments =
+      await Appointment.find({
+
+        userId:
+          req.user.id
+
+      }).sort({
+        date: 1
       });
 
-    } catch (error) {
-      res.status(500).json({
-        message: "Server error",
-        error: error.message
+    res.json(
+      appointments
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+//ADMIN - GET ALL APPOINTMENTS
+// AUTO COMPLETE OLD ONES
+const getAllAppointments=async (req, res) => {
+
+  try {
+
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+    await Appointment.updateMany(
+      {
+
+        date: {
+          $lt: today
+        },
+
+        status: {
+          $in: [
+            "Pending",
+            "Confirmed"
+          ]
+        }
+
+      },
+
+      {
+        $set: {
+          status:
+            "Completed"
+        }
+      }
+    );
+
+    const appointments =
+      await Appointment.find()
+      .sort({
+        date: 1
       });
-    }
-  };
+
+    res.json(
+      appointments
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
 
 
 module.exports = {
   bookAppointment,
-  getAppointments,
   getBookedSlots,
+  rescheduleAppointment,
+  updateAppointmentStatus,
   deleteAppointment,
-  updateAppointmentStatus
+  getUserAppointments,
+  getAllAppointments
 };

@@ -12,7 +12,7 @@ const {
   getAvailDoctor,
   updateDoctor,
   deleteDoctor
-} = require("../controllers/doctorController");
+} = require("../controllers/docController");
 
 
 // ADD DOCTOR

@@ -1,14 +1,18 @@
 const express = require("express");
-
 const router = express.Router();
-
-const Doctor = require("../models/Doctor");
-
 const authMiddleware =
   require("../middleware/authMiddleware");
 
 const checkRole =
   require("../middleware/checkRole");
+
+const {
+  createDoctor,
+  allDoctors,
+  getAvailDoctor,
+  updateDoctor,
+  deleteDoctor
+} = require("../controllers/doctorController");
 
 
 // ADD DOCTOR
@@ -16,71 +20,22 @@ router.post(
   "/",
   authMiddleware,
   checkRole(["admin"]),
-  async (req, res) => {
-    try {
-      const doctor =
-        await Doctor.create(req.body);
+  createDoctor);
 
-      res.status(201).json(doctor);
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-  }
-);
+//ALL DOCTOR
 
 router.get(
   "/admin/all",
   authMiddleware,
   checkRole(["admin"]),
-  async (req, res) => {
-
-    try {
-
-      const doctors =
-        await Doctor.find();
-
-      res.json(doctors);
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
+  allDoctors
 );
 
 //GET AVAILABLE DOCTORS
 
 router.get(
   "/",
-  async (req, res) => {
-
-    try {
-
-      const doctors =
-        await Doctor.find({
-          available: true
-        });
-
-      res.json(doctors);
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
+  getAvailDoctor
 );
 // UPDATE DOCTOR
 
@@ -88,30 +43,7 @@ router.put(
   "/:id",
   authMiddleware,
   checkRole(["admin"]),
-  async (req, res) => {
-
-    try {
-
-      const doctor =
-        await Doctor.findByIdAndUpdate(
-          req.params.id,
-          req.body,
-          {
-            new: true
-          }
-        );
-
-      res.json(doctor);
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
+  updateDoctor
 );
 // DELETE DOCTOR
 
@@ -119,28 +51,7 @@ router.delete(
   "/:id",
   authMiddleware,
   checkRole(["admin"]),
-  async (req, res) => {
-
-    try {
-
-      await Doctor.findByIdAndDelete(
-        req.params.id
-      );
-
-      res.json({
-        message:
-          "Doctor deleted successfully"
-      });
-
-    } catch (error) {
-
-      res.status(500).json({
-        message: error.message
-      });
-
-    }
-
-  }
+  deleteDoctor
 );
 
 module.exports = router;
